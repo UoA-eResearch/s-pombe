@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 public class LoadDat : MonoBehaviour {
 
@@ -11,24 +12,30 @@ public class LoadDat : MonoBehaviour {
 	public GameObject spherePrefab;
 	public GameObject markerPrefab;
 	private MaterialPropertyBlock[] materials;
+	public GameObject menu;
+	public GameObject togglePrefab;
+	private List<GameObject> spheres = new List<GameObject>();
+	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 
 	void LoadFromDat()
 	{
-		foreach (Transform childTransform in transform) Destroy(childTransform.gameObject);
+		foreach (GameObject go in spheres) Destroy(go);
+		spheres = new List<GameObject>();
 		var lines = structures[index].text.Split('\n');
-		Debug.Log(lines.Length);
-		foreach (var l in lines)
+		for (int i = 0; i < lines.Length; i++)
 		{
+			var l = lines[i];
 			if (l.Length == 0) continue;
 			var bits = l.Split();
 			var c = int.Parse(bits[0]);
 			var x = float.Parse(bits[1]);
 			var y = float.Parse(bits[2]);
 			var z = float.Parse(bits[3]);
-			var sphere = Instantiate(spherePrefab);
-			sphere.transform.parent = transform;
+			var sphere = Instantiate(spherePrefab, transform);
+			sphere.name = i.ToString();
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
+			spheres.Add(sphere);
 		}
 	}
 
@@ -58,15 +65,16 @@ public class LoadDat : MonoBehaviour {
 		Debug.Log("min: " + ints.Min() + ", max: " + ints.Max());
 		for (int i = 0; i < ints.Count; i++)
 		{
-			var sphere = transform.GetChild(i);
+			var sphere = spheres[i];
 			var w = ints[i];
 			if (w > 0)
 			{
-				var marker = Instantiate(markerPrefab);
-				marker.transform.parent = sphere;
+				var marker = Instantiate(markerPrefab, sphere.transform);
+				marker.name = name;
 				marker.transform.localPosition = new Vector3(0, .5f, 0);
 				marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
 				marker.GetComponent<Renderer>().SetPropertyBlock(materials[3]);
+				markers[name].Add(marker);
 			}
 		}
 	}
@@ -90,6 +98,17 @@ public class LoadDat : MonoBehaviour {
 		weights = Resources.LoadAll<TextAsset>("Weights/");
 		InitColors();
 		Debug.Log(structures.Length + " structures " + weights.Length + " weights");
+		// Setup menu
+		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
+		foreach (var w in weights)
+		{
+			var toggle = Instantiate(togglePrefab, menu.transform);
+			toggle.GetComponentInChildren<Text>().text = w.name;
+			toggle.name = w.name;
+			toggle.transform.localPosition = new Vector3(0, y, 0);
+			y -= 30;
+			markers.Add(w.name, new List<GameObject>());
+		}
 		LoadFromDat();
 		LoadWeight("Weight_H3K4_sum_over_granule");
 	}

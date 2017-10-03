@@ -2,6 +2,7 @@
 
 public class PlayerController : MonoBehaviour
 {
+	public GameObject menu;
 	void ViveControl(int controllerId)
 	{
 		var controller = SteamVR_Controller.Input(controllerId);
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
 		}
 		if (controller.GetPress(SteamVR_Controller.ButtonMask.ApplicationMenu))
 		{
-			gameObject.GetComponent<LoadDat>().LoadNext();
+			menu.SetActive(!menu.activeSelf);
 		}
 	}
 
