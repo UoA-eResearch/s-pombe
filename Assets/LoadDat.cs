@@ -110,7 +110,6 @@ public class LoadDat : MonoBehaviour {
 			markers.Add(w.name, new List<GameObject>());
 		}
 		LoadFromDat();
-		LoadWeight("Weight_H3K4_sum_over_granule");
 	}
 	
 	// Update is called once per frame
