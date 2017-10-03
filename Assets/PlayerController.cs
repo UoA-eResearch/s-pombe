@@ -23,9 +23,20 @@ public class PlayerController : MonoBehaviour
 			}
 			transform.localScale *= scale;
 		}
-		if (controller.GetPress(SteamVR_Controller.ButtonMask.ApplicationMenu))
+		if (controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
 		{
-			menu.SetActive(!menu.activeSelf);
+			controller.TriggerHapticPulse(1000);
+			if (menu.activeSelf)
+			{
+				menu.SetActive(false);
+			}
+			else
+			{
+				menu.SetActive(true);
+				menu.transform.position = Camera.main.transform.position;
+				menu.transform.rotation = Camera.main.transform.rotation;
+				menu.transform.position += menu.transform.forward * 10;
+			}
 		}
 	}
 

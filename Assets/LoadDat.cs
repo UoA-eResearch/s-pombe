@@ -16,6 +16,7 @@ public class LoadDat : MonoBehaviour {
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
+	private List<GameObject> toggles = new List<GameObject>();
 
 	void LoadFromDat()
 	{
@@ -43,6 +44,13 @@ public class LoadDat : MonoBehaviour {
 	{
 		index++;
 		LoadFromDat();
+		foreach (var t in toggles)
+		{
+			if (t.GetComponent<Toggle>().isOn)
+			{
+				LoadWeight(t.name);
+			}
+		}
 	}
 
 	public void LoadWeight(string name)
@@ -106,6 +114,7 @@ public class LoadDat : MonoBehaviour {
 			toggle.GetComponentInChildren<Text>().text = w.name;
 			toggle.name = w.name;
 			toggle.transform.localPosition = new Vector3(0, y, 0);
+			toggles.Add(toggle);
 			y -= 30;
 			markers.Add(w.name, new List<GameObject>());
 		}
