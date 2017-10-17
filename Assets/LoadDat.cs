@@ -71,17 +71,24 @@ public class LoadDat : MonoBehaviour {
 		var lines = match.Split('\n');
 		var ints = lines.Where(s => s != "").Select(s => Convert.ToInt16(s)).ToList();
 		Debug.Log("min: " + ints.Min() + ", max: " + ints.Max());
-		for (int i = 0; i < ints.Count; i++)
+
+        var rot = UnityEngine.Random.rotation;
+        Color newColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f);
+        var mat = new MaterialPropertyBlock();
+        mat.SetColor("_Color", newColor);
+
+        for (int i = 0; i < ints.Count; i++)
 		{
 			var sphere = spheres[i];
 			var w = ints[i];
 			if (w > 0)
 			{
-				var marker = Instantiate(markerPrefab, sphere.transform);
+                var marker = Instantiate(markerPrefab, sphere.transform);
 				marker.name = name;
-				marker.transform.localPosition = new Vector3(0, .5f, 0);
-				marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
-				marker.GetComponent<Renderer>().SetPropertyBlock(materials[3]);
+                marker.transform.localPosition = new Vector3(0, 0, 0);
+                marker.transform.rotation = rot;
+                marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
+				marker.GetComponent<Renderer>().SetPropertyBlock(mat);
 				markers[name].Add(marker);
 			}
 		}
@@ -97,7 +104,7 @@ public class LoadDat : MonoBehaviour {
 		blue.SetColor("_Color", Color.blue);
 		var magenta = new MaterialPropertyBlock();
 		magenta.SetColor("_Color", Color.magenta);
-		materials = new MaterialPropertyBlock[] { red, green, blue, magenta };
+        materials = new MaterialPropertyBlock[] { red, green, blue, magenta };
 	}
 
 	// Use this for initialization
