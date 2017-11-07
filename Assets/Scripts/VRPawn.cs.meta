@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 979158f32cf50434c906f0950a37d2d2
+timeCreated: 1509661627
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - Head: {instanceID: 0}
+  - LeftController: {instanceID: 0}
+  - RightController: {instanceID: 0}
+  - rootPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
