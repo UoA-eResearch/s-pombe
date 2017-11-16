@@ -5,7 +5,8 @@ using UnityEngine.Networking;
 
 public class DNASpawner : NetworkBehaviour {
 
-	public GameObject root;
+	public GameObject dnaPrefab;
+	public GameObject menuPrefab;
 
 	public void Start(){
 		
@@ -24,9 +25,12 @@ public class DNASpawner : NetworkBehaviour {
 	[Command]
 	public void CmdSpawn(){
 		Debug.Log ("In Cmd");
-		GameObject dna = (GameObject)Instantiate (root, transform.position, Quaternion.identity);
-
+		GameObject dna = (GameObject)Instantiate (dnaPrefab, transform.position, Quaternion.identity);
 		NetworkServer.SpawnWithClientAuthority (dna, connectionToClient);
+
+		GameObject menu = (GameObject)Instantiate (menuPrefab, transform.position, Quaternion.identity);
+		NetworkServer.SpawnWithClientAuthority (menu, connectionToClient);
+
 		dna.GetComponent<LoadDat> ().RpcInit ();
 
 	}

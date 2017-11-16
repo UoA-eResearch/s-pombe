@@ -16,10 +16,12 @@ public class VRPawn : NetworkBehaviour {
             GetComponentsInChildren<SteamVR_TrackedObject>(true).ToList().ForEach(x => x.enabled = true);
             Head.GetComponentsInChildren<MeshRenderer>(true).ToList().ForEach(x => x.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
             gameObject.name = "LocalPlayer";
+			gameObject.tag = "LocalPlayer";
 
         } else
         {
             gameObject.name = "RemotePlayer";
+			gameObject.tag = "RemotePlayer";
         }
 
 	}

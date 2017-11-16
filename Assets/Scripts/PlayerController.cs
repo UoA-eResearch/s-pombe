@@ -13,6 +13,12 @@ public class PlayerController : NetworkBehaviour
 			var controller = SteamVR_Controller.Input(controllerId);
 			if (controller.GetPress(SteamVR_Controller.ButtonMask.Trigger))
 			{
+
+			GameObject player = GameObject.FindGameObjectWithTag ("LocalPlayer");
+			NetworkIdentity playerID = player.GetComponent<NetworkIdentity> ();
+			CmdSetAuth (netId, playerID);
+
+
 				var v = controller.velocity;
 				v.Scale(transform.localScale);
 				transform.position += v * 100;
@@ -62,8 +68,34 @@ public class PlayerController : NetworkBehaviour
 			if (rightI != -1) {
 				ViveControl (rightI);
 			}
+			
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			print ("space key was pressed");
+
+		}
+
 	}
 
+	[Command]
+	public void CmdSetAuth(NetworkInstanceId objectId, NetworkIdentity player){
 
+		var iObject = NetworkServer.FindLocalObject (objectId);
+		var networkIdentity = iObject.GetComponent<NetworkIdentity> ();
+		var otherOwner = networkIdentity.clientAuthorityOwner;
+		Debug.Log ("other owner: " + otherOwner);
+
+		if (otherOwner == player.connectionToClient) {
+			Debug.Log ("Player is the owner, return");
+			Debug.Log (player.hasAuthority);
+			return;
+		} else {
+		if (otherOwner != null) {
+			Debug.Log ("Remove owner");
+			networkIdentity.RemoveClientAuthority (otherOwner);
+		}
+		Debug.Log ("Assign owner now");
+		networkIdentity.AssignClientAuthority (player.connectionToClient);
+		}
+	}
 		
 }

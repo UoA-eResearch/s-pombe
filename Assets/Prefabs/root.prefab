@@ -151,7 +151,7 @@ MonoBehaviour:
     type: 2}
   markerPrefab: {fileID: 1291137040268400, guid: 6f006a86b9b60a542949f200a5533ad4,
     type: 2}
-  menu: {fileID: 1252106612042838, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
+  menu: {fileID: 1197372231456456, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
   togglePrefab: {fileID: 1932526695803662, guid: 7e85cc2931cf583489a7bcaf400ab316,
     type: 2}
   spheres: []
@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6316019e278ad649a49162d8f25d30e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu: {fileID: 1252106612042838, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
+  menu: {fileID: 1197372231456456, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
 --- !u!135 &135106857423022112
 SphereCollider:
   m_ObjectHideFlags: 1
