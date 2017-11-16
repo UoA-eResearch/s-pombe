@@ -11,23 +11,16 @@ public class LoadDat : NetworkBehaviour {
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
-	//[SyncVar]
 	public GameObject spherePrefab;
-	//[SyncVar]
 	public GameObject markerPrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion [] rotations;
 	private Color32[] colors;
-	//[SyncVar]
 	public GameObject menu;
-	//[SyncVar]
 	public GameObject togglePrefab;
 	public List<GameObject> spheres = new List<GameObject>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	public List<GameObject> toggles = new List<GameObject>();
-
-	//[SyncVar]
-	//public GameObject rootPrefab;
 
 	//[SyncVar]
 	public Int64 numChoice = 0;
@@ -62,7 +55,6 @@ public class LoadDat : NetworkBehaviour {
 			sphere.name = i.ToString();
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
-			//NetworkServer.Spawn (sphere);
 			spheres.Add(sphere);
 		}
 	}
@@ -76,124 +68,15 @@ public class LoadDat : NetworkBehaviour {
 		{
 			if (t.GetComponent<Toggle>().isOn)
 			{
-				RpcLoadWeight(t.name);
+				LoadWeight(t.name);
 			}
 		}
 	}
-
-
-	public void LoadWeight(String name){
-
-		if (hasAuthority) {
-			Debug.Log ("Has Authority load");
-			RpcLoadWeight (name);
-		} else {
-			Debug.Log ("No Authority load");
-			GameObject player = GameObject.Find("LocalPlayer");
-			Debug.Log (player);
-
-			var rootID = gameObject.GetComponent<NetworkIdentity> ();
-			Debug.Log (rootID);
-			PlayerController cont = gameObject.GetComponent<PlayerController> ();//player.AddComponent<PlayerController> ();
-			Debug.Log (cont);
-			cont.SetAuth (gameObject, rootID);
-
-			//gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
-			Debug.Log (hasAuthority);
-
-			CmdCallRpcLoadWeight (name);
-
-			//gameObject.GetComponent<NetworkIdentity>().RemoveClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
-			Debug.Log (hasAuthority);
-		}
-
-	}
-
-
-	public void RemoveWeight(String name){
-
-
-		if (hasAuthority) {
-			Debug.Log ("Has Authority remove");
-			//RpcRemoveWeight (name);
-		} else {
-			Debug.Log ("No Authority remove");
-			//CmdCallRpcRemoveWeight (name);
-		}
-
-	}
-
-
-	[Command]
-	void CmdCallRpcLoadWeight(String name){
-		RpcLoadWeight (name);
-	}
-
-	[Command]
-	void CmdCallRpcRemoveWeight(String name){
-		RpcRemoveWeight (name);
-	}
-
-	[ClientRpc]
-	public void RpcLoadWeight(String name)
-	{
-		nameAdd = name;
-		numChoice = 0;
-		match = "";
-
-		foreach (var w in weights)
-		{
-			numChoice++;
-			if (w.name == name)
-			{
-				match = w.text;
-				break;
-			}
-		}
-		if (match == "")
-		{
-			Debug.LogError(name + " is not a valid weight filename");
-			return;
-		}
-		var lines = match.Split('\n');
-		var ints = lines.Where(s => s != "").Select(s => Convert.ToInt16(s)).ToList();
-		Debug.Log("min: " + ints.Min() + ", max: " + ints.Max());
-
-
-		var rot = rotations[numChoice];
-		var mat = materials[numChoice + 2];
-		Debug.Log ("Num Choice: " + numChoice);
-
-		for (int i = 0; i < ints.Count; i++)
-		{
-			var sphere = spheres[i];
-			var w = ints[i];
-			if (w > 0)
-			{
-				var marker = Instantiate(markerPrefab, sphere.transform);
-				marker.name = name;
-				marker.transform.localPosition = new Vector3(0, 0, 0);
-				marker.transform.rotation = rot;
-				marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
-				marker.GetComponent<Renderer>().SetPropertyBlock(mat);
-				markers[name].Add(marker);
-				//NetworkServer.Spawn (marker);
-			}
-		}
-	}
-
-	[ClientRpc]
-	public void RpcRemoveWeight(String name){
-		nameRemove = name;
-		var gameObjects = markers[name];
-		foreach (var go in gameObjects) Destroy(go);
-		markers[name] = new List<GameObject>();
-	}
+		
 
 
 
-
-	public void LoadWeightLocal(String name)
+	public void LoadWeight(String name)
 	{
 		Debug.Log ("In Add Weight Local");
 		nameAdd = name;
@@ -243,7 +126,7 @@ public class LoadDat : NetworkBehaviour {
 	}
 
 
-	public void RemoveWeightLocal(String name){
+	public void RemoveWeight(String name){
 		Debug.Log ("In Remove Weight Local");
 		changeRemoveLocal = name;
 		nameRemove = name;
@@ -328,6 +211,7 @@ public class LoadDat : NetworkBehaviour {
 			dullGreen, brightBlue, dullBlue, darkBlue, lightYellow, orange, lightGreen, neonGreen, grassGreen, darkGreen };
 	}
 
+
 	void InitRotations() {
 		rotations = new Quaternion[] {new Quaternion(-0.1f, -0.4f, -0.7f, 0.5f), new Quaternion(-0.5f, -0.5f, 0.2f, 0.7f), new Quaternion(-0.2f, 0.8f, 0.3f, 0.4f), new Quaternion(-0.7f, 0.7f, -0.2f, 0.1f), new Quaternion(0.3f, -0.3f, -0.5f, 0.8f), new Quaternion(0.7f, 0.3f, 0.1f, 0.7f), new Quaternion(0.6f, -0.4f, 0.7f, 0.1f),
 			new Quaternion(-0.6f, 0.3f, 0.1f, 0.7f), new Quaternion(0.4f, 0.6f, 0.7f, 0.1f), new Quaternion(0.2f, -0.2f, -0.8f, 0.5f), new Quaternion(-0.7f, -0.6f, -0.3f, 0.1f), new Quaternion(0.7f, -0.4f, -0.3f, 0.5f), new Quaternion(-0.5f, -0.2f, 0.6f, 0.6f), new Quaternion(0.4f, -0.8f, 0.3f, 0.3f), new Quaternion(-0.9f, 0.0f, -0.2f, 0.2f), new Quaternion(0.5f, 0.6f, 0.6f, 0.2f), new Quaternion(0.9f, 0.3f, 0.3f, 0.1f),
@@ -335,8 +219,8 @@ public class LoadDat : NetworkBehaviour {
 
 	}
 
-
-	public void Start(){
+	[ClientRpc]
+	public void RpcInit(){
 		structures = Resources.LoadAll<TextAsset>("Structures/");
 		weights = Resources.LoadAll<TextAsset>("Weights/");
 		InitColors();
@@ -345,7 +229,6 @@ public class LoadDat : NetworkBehaviour {
 
 		// Setup menu
 		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
-		//NetworkServer.Spawn (menu);
 		var count = 0;
 		foreach (var w in weights)
 		{
@@ -353,33 +236,16 @@ public class LoadDat : NetworkBehaviour {
 			var toggle = Instantiate(togglePrefab, menu.transform);
 			toggle.GetComponentInChildren<Text>().text = w.name;
 			toggle.GetComponentInChildren<Text>().color = color;
-			//toggle.GetComponentInChildren<CanvasRenderer>().SetColor(colors[count]);
 			toggle.name = w.name;
 			toggle.transform.localPosition = new Vector3(0, y, 0);
-			//NetworkServer.Spawn (toggle);
 			toggles.Add(toggle);
 			y -= 30;
 			markers.Add(w.name, new List<GameObject>());
 			count += 1;
 		}
-		//NetworkServer.Spawn (menu);
 		LoadFromDat();
-
-		//Debug.Log ("Authority: " + hasAuthority);
-		//bool result = NetworkServer.SpawnObjects ();
-
-		//Debug.Log ("Spawned: " + result);
-		//NetworkServer.Spawn(root);
-		//root = gameObject;
 	}
 
-
-
-	//public override void OnStartClient ()
-	//{
-	//	var go = (GameObject)Instantiate (rootPrefab, transform.position, Quaternion.identity);
-	//	NetworkServer.SpawnWithClientAuthority (go, base.connectionToClient);
-	//}
 
 	// Update is called once per frame
 	void Update () {

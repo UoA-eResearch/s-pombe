@@ -7,12 +7,27 @@ public class DNASpawner : NetworkBehaviour {
 
 	public GameObject root;
 
-	public override void OnStartServer(){
+	public void Start(){
+		
+		Debug.Log ("in start client");
+		Debug.Log(isServer);
+		Debug.Log(isLocalPlayer);
 
-		//Debug.Log ("In DNA Spawner");
-		//GameObject dna = (GameObject)Instantiate (root, transform.position, transform.rotation);
+		if (isLocalPlayer) {
+			if (!isServer) {
+				Debug.Log ("spawn now");
+				CmdSpawn ();
+			}
+		}
+	}
 
-		//NetworkServer.Spawn (dna);
-		//dna.GetComponent<LoadDat> ().Init ();
+	[Command]
+	public void CmdSpawn(){
+		Debug.Log ("In Cmd");
+		GameObject dna = (GameObject)Instantiate (root, transform.position, Quaternion.identity);
+
+		NetworkServer.SpawnWithClientAuthority (dna, connectionToClient);
+		dna.GetComponent<LoadDat> ().RpcInit ();
+
 	}
 }

@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 114356107975267578}
   - component: {fileID: 222883018200068342}
   - component: {fileID: 114754567132869298}
-  - component: {fileID: 114272327195321192}
+  - component: {fileID: 114050406508449770}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354113ffd39a047409a5f530e72b20e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114272327195321192
+--- !u!114 &114050406508449770
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -123,7 +123,7 @@ MonoBehaviour:
     i14: 28
     i15: 240
   m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
+  m_LocalPlayerAuthority: 1
 --- !u!114 &114356107975267578
 MonoBehaviour:
   m_ObjectHideFlags: 1

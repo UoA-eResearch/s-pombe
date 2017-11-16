@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
-public class ToggleHandler : NetworkBehaviour
+public class ToggleHandler : MonoBehaviour
 {
 	private LoadDat dat;
 	public void Awake()
@@ -13,17 +13,19 @@ public class ToggleHandler : NetworkBehaviour
 		dat = GameObject.Find("root").GetComponent<LoadDat>();
 	}
 
-	[ServerCallback]
+	//[ServerCallback]
 	public void Toggle(bool on)
 	{
 		if (on)
 		{
-			dat.RpcLoadWeight(gameObject.name);
+			//dat.RpcLoadWeight(gameObject.name);
+			dat.LoadWeight(gameObject.name);
 			Debug.Log ("In toggle handler on");
 		}
 		else
 		{
-			dat.RpcRemoveWeight (gameObject.name);
+			//dat.RpcRemoveWeight (gameObject.name);
+			dat.RemoveWeight (gameObject.name);
 			Debug.Log("In toggle handler off");
 		}
 	}

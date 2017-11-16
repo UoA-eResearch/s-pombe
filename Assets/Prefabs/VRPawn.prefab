@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 11415038}
   - component: {fileID: 11422416}
   - component: {fileID: 11487390}
+  - component: {fileID: 114512962462045638}
   m_Layer: 0
   m_Name: VRPawn
   m_TagString: Untagged
@@ -622,8 +623,7 @@ MonoBehaviour:
   Head: {fileID: 498524}
   LeftController: {fileID: 416724}
   RightController: {fileID: 452716}
-  rootPrefab: {fileID: 1850769409748472, guid: 8349376190242f04287d8bcae6456dd2, type: 2}
-  dat: {fileID: 0}
+  root: {fileID: 1343910626513020, guid: deeff24351bb33449ad51a8975107842, type: 2}
 --- !u!114 &11415038
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -817,3 +817,16 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 102416}
   m_IsPrefabParent: 1
+--- !u!114 &114512962462045638
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 102416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f60ceeb77665e434baedd3b5da1cc63d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 1343910626513020, guid: deeff24351bb33449ad51a8975107842, type: 2}
+  count: 0

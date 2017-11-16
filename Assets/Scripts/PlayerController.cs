@@ -3,10 +3,9 @@ using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
-	[SyncVar]
+	
 	public GameObject menu;
-	//[SyncVar]
-	//public GameObject root;
+
 	void ViveControl(int controllerId)
 	{
 
@@ -63,33 +62,8 @@ public class PlayerController : NetworkBehaviour
 			if (rightI != -1) {
 				ViveControl (rightI);
 			}
-		//root = GameObject.Find("root");
 	}
 
-	public void SetAuth(GameObject objectId, NetworkIdentity player){
-		CmdSetAuth (objectId, player);
-	}
 
-	[Command]
-	public void CmdSetAuth(GameObject objectId, NetworkIdentity player){
-
-		var iObject = objectId;//NetworkServer.FindLocalObject (objectId);
-		var networkIdentity = iObject.GetComponent<NetworkIdentity> ();
-		var otherOwner = networkIdentity.clientAuthorityOwner;
-		Debug.Log ("other owner: " + otherOwner);
-
-		//if (otherOwner == player.connectionToClient) {
-		//	Debug.Log ("Player is the owner, return");
-		//	Debug.Log (player.hasAuthority);
-		//	return;
-		//} else {
-			if (otherOwner != null) {
-				Debug.Log ("Remove owner");
-				networkIdentity.RemoveClientAuthority (otherOwner);
-			}
-			Debug.Log ("Assign owner now");
-			networkIdentity.AssignClientAuthority (player.connectionToClient);
-		//}
-	}
 		
 }

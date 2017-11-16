@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33403850442060780}
   - component: {fileID: 135519740266534776}
   - component: {fileID: 23807037410778670}
-  - component: {fileID: 114742704119436392}
+  - component: {fileID: 114800133388901122}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1123130876344440}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114742704119436392
+--- !u!114 &114800133388901122
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

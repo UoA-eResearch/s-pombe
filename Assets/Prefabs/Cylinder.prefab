@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33792458047921034}
   - component: {fileID: 136410205285261490}
   - component: {fileID: 23237555617645134}
-  - component: {fileID: 114038146533243722}
+  - component: {fileID: 114040801834103598}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1291137040268400}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114038146533243722
+--- !u!114 &114040801834103598
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
