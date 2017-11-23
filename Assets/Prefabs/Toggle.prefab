@@ -59,7 +59,6 @@ GameObject:
   - component: {fileID: 114871641047604558}
   - component: {fileID: 114571683731240218}
   - component: {fileID: 65543403472539668}
-  - component: {fileID: 114813156836777500}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -194,38 +193,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114813156836777500
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1932526695803662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 126
-    i1: 133
-    i2: 204
-    i3: 41
-    i4: 49
-    i5: 207
-    i6: 88
-    i7: 52
-    i8: 137
-    i9: 167
-    i10: 188
-    i11: 175
-    i12: 64
-    i13: 10
-    i14: 179
-    i15: 22
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
 --- !u!114 &114824154754339944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,10 +235,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114605035043851988, guid: deeff24351bb33449ad51a8975107842,
-          type: 2}
-        m_MethodName: LoadNext
-        m_Mode: 1
+      - m_Target: {fileID: 114571683731240218}
+        m_MethodName: Toggle
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

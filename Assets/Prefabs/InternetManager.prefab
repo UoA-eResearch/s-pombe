@@ -56,8 +56,8 @@ MonoBehaviour:
   m_OfflineScene: 
   m_OnlineScene: 
   m_SpawnPrefabs:
-  - {fileID: 1343910626513020, guid: deeff24351bb33449ad51a8975107842, type: 2}
-  - {fileID: 1197372231456456, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
+  - {fileID: 1953345350646216, guid: deeff24351bb33449ad51a8975107842, type: 2}
+  - {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -100,7 +100,7 @@ MonoBehaviour:
     m_MaxTimerTimeout: 12000
     m_MinNetSimulatorTimeout: 1
     m_MaxNetSimulatorTimeout: 12000
-  m_Channels: 0500000000000000
+  m_Channels: 
   m_UseWebSockets: 0
   m_UseSimulator: 0
   m_SimulatedLatency: 1
@@ -114,7 +114,7 @@ MonoBehaviour:
   isNetworkActive: 0
   matchMaker: {fileID: 0}
   CreateRoom: 0
-  RoomName: cervr
+  RoomName: cer
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

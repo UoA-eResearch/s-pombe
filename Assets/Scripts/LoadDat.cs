@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class LoadDat : NetworkBehaviour {
 
-
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
@@ -15,12 +14,14 @@ public class LoadDat : NetworkBehaviour {
 	public GameObject markerPrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion [] rotations;
-	private Color32[] colors;
-	public GameObject menu;
+	public Color32[] colors;
+	public GameObject menuPrefab;
 	public GameObject togglePrefab;
 	public List<GameObject> spheres = new List<GameObject>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	public List<GameObject> toggles = new List<GameObject>();
+	private GameObject dna;
+	private LoadDat dat;
 
 	//[SyncVar]
 	public Int64 numChoice = 0;
@@ -36,11 +37,20 @@ public class LoadDat : NetworkBehaviour {
 	//[SyncVar(hook="RemoveWeightLocal")]
 	public String changeRemoveLocal;
 
-
-	void LoadFromDat()
+	[ClientRpc]
+	public void RpcLoadFromDat()
 	{
+		gameObject.tag = "DNA";
+		structures = Resources.LoadAll<TextAsset>("Structures/");
+		Debug.Log(structures.Length + " structures ");
+
+		InitColors();
+		InitRotations();
+
 		foreach (GameObject go in spheres) Destroy(go);
 		spheres = new List<GameObject>();
+		print (index);
+		print (structures.Length);
 		var lines = structures[index].text.Split('\n');
 		for (int i = 0; i < lines.Length; i++)
 		{
@@ -60,27 +70,87 @@ public class LoadDat : NetworkBehaviour {
 	}
 
 
-	public void LoadNext()
+	[ClientRpc]
+	public void RpcSpawnMenu(){
+
+		GameObject.Find("Menu(Clone)").tag = "Menu";
+		weights = Resources.LoadAll<TextAsset>("Weights/");
+
+		colors = gameObject.GetComponent<LoadDat> ().getColors ();
+		gameObject.transform.localPosition = new Vector3(0, 0, 8);
+		GameObject menu = GameObject.FindGameObjectWithTag ("Menu");
+		print (menu);
+		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
+		var count = 0;
+		foreach (var w in weights)
+		{
+
+			Color color = colors[count];
+			var toggle = Instantiate(togglePrefab, menu.transform);
+			//NetworkServer.Spawn (toggle);
+			toggle.GetComponentInChildren<Text>().text = w.name;
+			toggle.GetComponentInChildren<Text>().color = color;
+			toggle.name = w.name;
+			toggle.transform.localPosition = new Vector3(0, y, 0);
+			toggles.Add(toggle);
+			y -= 30;
+			markers.Add(w.name, new List<GameObject>());
+			count += 1;
+		}
+		//LoadFromDat();
+
+	}
+
+	[Command]
+	public void CmdToggle(bool on, string name)
+	{
+		dna = GameObject.FindGameObjectWithTag ("DNA");
+		print (dna);
+		dat = dna.GetComponent<LoadDat>();
+		print (dat);
+
+		print (on);
+		if (on)
+		{
+			Debug.Log ("In toggle handler on");
+			dat.RpcLoadWeight(name);
+			//dat.LoadWeight(gameObject.name);
+		}
+		else
+		{
+			Debug.Log("In toggle handler off");
+			dat.RpcRemoveWeight (name);
+			//dat.RemoveWeight (gameObject.name);
+		}
+	}
+
+	[Command]
+	public void CmdLoadNext()
 	{
 		index++;
-		LoadFromDat();
+		RpcLoadFromDat();
 		foreach (var t in toggles)
 		{
 			if (t.GetComponent<Toggle>().isOn)
 			{
-				LoadWeight(t.name);
+				RpcLoadWeight(t.name);
 			}
 		}
+	}
+
+	public Color32[] getColors(){
+		return colors;
 	}
 		
 
 
-
-	public void LoadWeight(String name)
+	[ClientRpc]
+	public void RpcLoadWeight(String name)
 	{
-		Debug.Log ("In Add Weight Local");
+		
+		TextAsset[] weights = Resources.LoadAll<TextAsset>("Weights/");
+		Debug.Log(weights.Length + " weights");
 		nameAdd = name;
-		changeLoadLocal = name;
 		numChoice = 0;
 		match = "";
 
@@ -115,24 +185,25 @@ public class LoadDat : NetworkBehaviour {
 			{
 				var marker = Instantiate(markerPrefab, sphere.transform);
 				marker.name = name;
+				marker.tag = "Marker";
 				marker.transform.localPosition = new Vector3(0, 0, 0);
 				marker.transform.rotation = rot;
 				marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
 				marker.GetComponent<Renderer>().SetPropertyBlock(mat);
-				markers[name].Add(marker);
-				//NetworkServer.Spawn (marker);
+				//markers[name].Add(marker);
+				gameObject.GetComponent<LoadDat>().markers[name].Add(marker);
+				//CmdSpawnMarker (marker);
 			}
 		}
 	}
 
 
-	public void RemoveWeight(String name){
-		Debug.Log ("In Remove Weight Local");
-		changeRemoveLocal = name;
+	[ClientRpc]
+	public void RpcRemoveWeight(String name){
 		nameRemove = name;
-		var gameObjects = markers[name];
-		foreach (var go in gameObjects) Destroy(go);
-		markers[name] = new List<GameObject>();
+		var goMarkers = gameObject.GetComponent<LoadDat> ().markers [name];//GameObject.FindGameObjectsWithTag ("Marker");
+		foreach (var go in goMarkers) Destroy(go);
+		gameObject.GetComponent<LoadDat> ().markers [name] = new List<GameObject>();
 	}
 
 	void InitColors()
@@ -218,33 +289,7 @@ public class LoadDat : NetworkBehaviour {
 			new Quaternion(-0.2f, -0.7f, -0.7f, 0.3f), new Quaternion(-0.3f, 0.9f, 0.2f, 0.3f), new Quaternion(0.3f, 0.6f, 0.4f, 0.6f), new Quaternion(-0.6f, 0.5f, -0.6f, 0.3f), new Quaternion(0.4f, 0.0f, 0.5f, 0.8f), new Quaternion(0.1f, 0.5f, -0.6f, 0.7f), new Quaternion(-0.6f, -0.7f, 0.1f, 0.4f)};
 
 	}
-
-	[ClientRpc]
-	public void RpcInit(){
-		structures = Resources.LoadAll<TextAsset>("Structures/");
-		weights = Resources.LoadAll<TextAsset>("Weights/");
-		InitColors();
-		InitRotations();
-		Debug.Log(structures.Length + " structures " + weights.Length + " weights");
-
-		// Setup menu
-		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
-		var count = 0;
-		foreach (var w in weights)
-		{
-			Color color = colors[count];
-			var toggle = Instantiate(togglePrefab, menu.transform);
-			toggle.GetComponentInChildren<Text>().text = w.name;
-			toggle.GetComponentInChildren<Text>().color = color;
-			toggle.name = w.name;
-			toggle.transform.localPosition = new Vector3(0, y, 0);
-			toggles.Add(toggle);
-			y -= 30;
-			markers.Add(w.name, new List<GameObject>());
-			count += 1;
-		}
-		LoadFromDat();
-	}
+		
 
 
 	// Update is called once per frame

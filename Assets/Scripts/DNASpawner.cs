@@ -28,10 +28,11 @@ public class DNASpawner : NetworkBehaviour {
 		GameObject dna = (GameObject)Instantiate (dnaPrefab, transform.position, Quaternion.identity);
 		NetworkServer.SpawnWithClientAuthority (dna, connectionToClient);
 
-		GameObject menu = (GameObject)Instantiate (menuPrefab, transform.position, Quaternion.identity);
+		var menu = Instantiate(menuPrefab, transform.position, Quaternion.identity);
 		NetworkServer.SpawnWithClientAuthority (menu, connectionToClient);
+		menu.transform.localPosition = new Vector3(0, 0, 8);
 
-		dna.GetComponent<LoadDat> ().RpcInit ();
-
+		dna.GetComponent<LoadDat> ().RpcLoadFromDat ();
+		dna.GetComponent<LoadDat> ().RpcSpawnMenu ();
 	}
 }

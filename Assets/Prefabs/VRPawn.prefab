@@ -827,5 +827,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f60ceeb77665e434baedd3b5da1cc63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dnaPrefab: {fileID: 1343910626513020, guid: deeff24351bb33449ad51a8975107842, type: 2}
-  menuPrefab: {fileID: 1197372231456456, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
+  dnaPrefab: {fileID: 1953345350646216, guid: deeff24351bb33449ad51a8975107842, type: 2}
+  menuPrefab: {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}

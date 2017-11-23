@@ -6,6 +6,9 @@ TagManager:
   tags:
   - LocalPlayer
   - RemotePlayer
+  - DNA
+  - Menu
+  - Marker
   layers:
   - Default
   - TransparentFX

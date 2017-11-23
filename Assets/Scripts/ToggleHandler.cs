@@ -7,26 +7,15 @@ using System.Collections.Generic;
 
 public class ToggleHandler : MonoBehaviour
 {
-	private LoadDat dat;
-	public void Awake()
-	{
-		dat = GameObject.Find("root").GetComponent<LoadDat>();
-	}
+	private GameObject dna;
 
-	//[ServerCallback]
 	public void Toggle(bool on)
 	{
-		if (on)
-		{
-			//dat.RpcLoadWeight(gameObject.name);
-			dat.LoadWeight(gameObject.name);
-			Debug.Log ("In toggle handler on");
-		}
-		else
-		{
-			//dat.RpcRemoveWeight (gameObject.name);
-			dat.RemoveWeight (gameObject.name);
-			Debug.Log("In toggle handler off");
-		}
+		dna = GameObject.Find ("root(Clone)");
+		print (gameObject);
+		print (dna);
+		print (on);
+		dna.GetComponent<LoadDat>().CmdToggle (on, gameObject.name);
 	}
+
 }
