@@ -20,22 +20,6 @@ public class LoadDat : NetworkBehaviour {
 	public List<GameObject> spheres = new List<GameObject>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	public List<GameObject> toggles = new List<GameObject>();
-	private GameObject dna;
-	private LoadDat dat;
-
-	//[SyncVar]
-	public Int64 numChoice = 0;
-	//[SyncVar]
-	public String match = "";
-	//[SyncVar(hook = "RpcLoadWeight")]
-	public String nameAdd;
-	//[SyncVar(hook = "RpcRemoveWeight")]
-	public String nameRemove;
-
-	//[SyncVar(hook="LoadWeightLocal")]
-	public String changeLoadLocal;
-	//[SyncVar(hook="RemoveWeightLocal")]
-	public String changeRemoveLocal;
 
 	[ClientRpc]
 	public void RpcLoadFromDat()
@@ -73,21 +57,19 @@ public class LoadDat : NetworkBehaviour {
 	[ClientRpc]
 	public void RpcSpawnMenu(){
 
-		GameObject.Find("Menu(Clone)").tag = "Menu";
+		var menu = GameObject.Find ("Menu(Clone)");
+		menu.tag = "Menu";
+		menu.transform.localPosition = new Vector3(0, 0, 8);
 		weights = Resources.LoadAll<TextAsset>("Weights/");
 
 		colors = gameObject.GetComponent<LoadDat> ().getColors ();
-		gameObject.transform.localPosition = new Vector3(0, 0, 8);
-		GameObject menu = GameObject.FindGameObjectWithTag ("Menu");
-		print (menu);
+
 		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
 		var count = 0;
 		foreach (var w in weights)
 		{
-
 			Color color = colors[count];
 			var toggle = Instantiate(togglePrefab, menu.transform);
-			//NetworkServer.Spawn (toggle);
 			toggle.GetComponentInChildren<Text>().text = w.name;
 			toggle.GetComponentInChildren<Text>().color = color;
 			toggle.name = w.name;
@@ -97,30 +79,24 @@ public class LoadDat : NetworkBehaviour {
 			markers.Add(w.name, new List<GameObject>());
 			count += 1;
 		}
-		//LoadFromDat();
-
 	}
 
 	[Command]
 	public void CmdToggle(bool on, string name)
 	{
-		dna = GameObject.FindGameObjectWithTag ("DNA");
-		print (dna);
-		dat = dna.GetComponent<LoadDat>();
-		print (dat);
+		var dna = GameObject.FindGameObjectWithTag ("DNA");
 
-		print (on);
+		var dat = dna.GetComponent<LoadDat>();
+
 		if (on)
 		{
 			Debug.Log ("In toggle handler on");
 			dat.RpcLoadWeight(name);
-			//dat.LoadWeight(gameObject.name);
 		}
 		else
 		{
 			Debug.Log("In toggle handler off");
 			dat.RpcRemoveWeight (name);
-			//dat.RemoveWeight (gameObject.name);
 		}
 	}
 
@@ -150,9 +126,8 @@ public class LoadDat : NetworkBehaviour {
 		
 		TextAsset[] weights = Resources.LoadAll<TextAsset>("Weights/");
 		Debug.Log(weights.Length + " weights");
-		nameAdd = name;
-		numChoice = 0;
-		match = "";
+		var numChoice = 0;
+		var match = "";
 
 		foreach (var w in weights)
 		{
@@ -190,9 +165,7 @@ public class LoadDat : NetworkBehaviour {
 				marker.transform.rotation = rot;
 				marker.transform.localScale = new Vector3(.1f, w / 10f, .1f);
 				marker.GetComponent<Renderer>().SetPropertyBlock(mat);
-				//markers[name].Add(marker);
 				gameObject.GetComponent<LoadDat>().markers[name].Add(marker);
-				//CmdSpawnMarker (marker);
 			}
 		}
 	}
@@ -200,8 +173,7 @@ public class LoadDat : NetworkBehaviour {
 
 	[ClientRpc]
 	public void RpcRemoveWeight(String name){
-		nameRemove = name;
-		var goMarkers = gameObject.GetComponent<LoadDat> ().markers [name];//GameObject.FindGameObjectsWithTag ("Marker");
+		var goMarkers = gameObject.GetComponent<LoadDat> ().markers [name];
 		foreach (var go in goMarkers) Destroy(go);
 		gameObject.GetComponent<LoadDat> ().markers [name] = new List<GameObject>();
 	}

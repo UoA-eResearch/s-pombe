@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: 222621534960993996}
   - component: {fileID: 114909820496607796}
   - component: {fileID: 114310220908561942}
-  - component: {fileID: 114024527950699030}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Menu
@@ -82,20 +81,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 160, y: 30, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114024527950699030
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1276666566760288}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbffba356f130da4297e0bb116014337, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  togglePrefab: {fileID: 1932526695803662, guid: 7e85cc2931cf583489a7bcaf400ab316,
-    type: 2}
-  toggles: []
 --- !u!114 &114240751452744078
 MonoBehaviour:
   m_ObjectHideFlags: 1
