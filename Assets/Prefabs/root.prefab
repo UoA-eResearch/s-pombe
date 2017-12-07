@@ -183,6 +183,7 @@ MonoBehaviour:
     type: 2}
   markerPrefab: {fileID: 1291137040268400, guid: 6f006a86b9b60a542949f200a5533ad4,
     type: 2}
+  colors: []
   menuPrefab: {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
   togglePrefab: {fileID: 1932526695803662, guid: 7e85cc2931cf583489a7bcaf400ab316,
     type: 2}
@@ -3771,12 +3772,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   toggles: []
-  numChoice: 0
-  match: 
-  nameAdd: 
-  nameRemove: 
-  changeLoadLocal: 
-  changeRemoveLocal: 
 --- !u!114 &114933902078703914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3789,6 +3784,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
+  dna: {fileID: 4603939162778358}
+  Fader: {fileID: 1158401140926218, guid: 71c5736c7c5f05349b64b415451b8bcd, type: 2}
 --- !u!135 &135284595048416306
 SphereCollider:
   m_ObjectHideFlags: 1

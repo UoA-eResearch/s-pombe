@@ -5,6 +5,16 @@ public class PlayerController : NetworkBehaviour
 {
 	
 	public GameObject menu;
+	public Transform dna;
+	private GameObject fader;
+	private Animator anim;
+	private Vector3 destination;
+
+	void Awake(){
+		fader = GameObject.Find ("Fader");
+		anim = fader.GetComponent<Animator> ();
+	}
+
 
 	void ViveControl(int controllerId)
 	{
@@ -14,9 +24,9 @@ public class PlayerController : NetworkBehaviour
 			if (controller.GetPress(SteamVR_Controller.ButtonMask.Trigger))
 			{
 
-			GameObject player = GameObject.FindGameObjectWithTag ("LocalPlayer");
-			NetworkIdentity playerID = player.GetComponent<NetworkIdentity> ();
-			CmdSetAuth (netId, playerID);
+			//GameObject player = GameObject.FindGameObjectWithTag ("LocalPlayer");
+			//NetworkIdentity playerID = player.GetComponent<NetworkIdentity> ();
+			//CmdSetAuth (netId, playerID);
 
 
 				var v = controller.velocity;
@@ -71,10 +81,67 @@ public class PlayerController : NetworkBehaviour
 			
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			print ("space key was pressed");
+			//GameObject player =  GameObject.FindGameObjectWithTag ("LocalPlayer");
+			//NetworkIdentity playerID = player.GetComponent<NetworkIdentity> ();
+			//CmdSetAuth (netId, playerID);
 
+			CmdBasecamp1 ();
 		}
 
 	}
+
+	[Command]
+	public void CmdBasecamp1(){
+		RpcBasecamp1 ();
+	}
+
+	[ClientRpc]
+	public void RpcBasecamp1(){
+		Vector3 origin = new Vector3 (0, 0, 0);
+		Vector3 basecamp1 = new Vector3 (1000, 0, 0);
+		Vector3 basecamp2 = new Vector3 (2000, 0, 0);
+		Vector3 basecamp3 = new Vector3 (1000, 1000, 0);
+		Vector3 basecamp4 = new Vector3 (1000, 0, 1000);
+
+
+		if (dna.position.Equals(origin)) {
+			destination = basecamp1;
+		} else if(dna.position.Equals(basecamp1)) {
+			destination = basecamp2;
+		}
+		else if(dna.position.Equals(basecamp2)) {
+			destination = basecamp3;
+		}
+		else if(dna.position.Equals(basecamp3)) {
+			destination = basecamp4;
+		}
+		else if(dna.position.Equals(basecamp4)) {
+			destination = origin;
+		}
+
+		FadeOut();
+		Invoke ("SetPosition", 2.5f);
+		Invoke ("FadeIn", 2.5f);
+	}
+
+	void SetPosition(){
+		dna.position = destination;
+	}
+
+
+	void FadeOut()
+	{
+		anim.SetBool("FadeIn", false);
+		anim.SetBool("FadeOut", true);
+	}
+
+
+	void FadeIn()
+	{
+		anim.SetBool("FadeOut", false);
+		anim.SetBool("FadeIn", true);
+	}
+
 
 	[Command]
 	public void CmdSetAuth(NetworkInstanceId objectId, NetworkIdentity player){
