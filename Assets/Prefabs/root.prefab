@@ -3785,7 +3785,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menu: {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
   dna: {fileID: 4603939162778358}
-  Fader: {fileID: 1158401140926218, guid: 71c5736c7c5f05349b64b415451b8bcd, type: 2}
 --- !u!135 &135284595048416306
 SphereCollider:
   m_ObjectHideFlags: 1

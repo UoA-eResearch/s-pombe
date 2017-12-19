@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Internet_test1.unity
+- path: Assets/Scenes/Multiuser.unity
   isLoaded: 1
   isActive: 1

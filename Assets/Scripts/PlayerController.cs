@@ -34,16 +34,37 @@ public class PlayerController : NetworkBehaviour
 				transform.position += v * 100;
 				transform.Rotate(controller.angularVelocity, Space.World);
 			}
-			if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
-			{
-				var s = controller.GetAxis().y;
-				float scale = 1.05f;
-				if (s < 0)
-				{
-					scale = .95f;
+			//if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+			//{
+			//	var s = controller.GetAxis().y;
+			//	float scale = 1.05f;
+			//	if (s < 0)
+			//	{
+			//		scale = .95f;
+			//	}
+			//	transform.localScale *= scale;
+			//}
+
+			if (controller.GetPress (SteamVR_Controller.ButtonMask.Touchpad)) {
+				Vector2 touchpad = (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_Axis0));
+
+				if (touchpad.y > 0.7f) {
+					print ("Moving Up");
+					transform.localScale *= 1.05f;
+				} else if (touchpad.y < -0.7f) {
+					print ("Moving Down");
+					transform.localScale *= .95f;
 				}
-				transform.localScale *= scale;
+
+				if (touchpad.x > 0.7f) {
+					print ("Moving Right");
+					CmdBasecampForward ();
+
+				} else if (touchpad.x < -0.7f) {
+					print ("Moving left");
+				}
 			}
+
 			if (controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
 			{
 				controller.TriggerHapticPulse(1000);
@@ -85,18 +106,19 @@ public class PlayerController : NetworkBehaviour
 			//NetworkIdentity playerID = player.GetComponent<NetworkIdentity> ();
 			//CmdSetAuth (netId, playerID);
 
-			CmdBasecamp1 ();
+			CmdBasecampForward ();
 		}
+
 
 	}
 
 	[Command]
-	public void CmdBasecamp1(){
-		RpcBasecamp1 ();
+	public void CmdBasecampForward(){
+		RpcBasecampForward ();
 	}
 
 	[ClientRpc]
-	public void RpcBasecamp1(){
+	public void RpcBasecampForward(){
 		Vector3 origin = new Vector3 (0, 0, 0);
 		Vector3 basecamp1 = new Vector3 (1000, 0, 0);
 		Vector3 basecamp2 = new Vector3 (2000, 0, 0);
@@ -117,6 +139,40 @@ public class PlayerController : NetworkBehaviour
 		}
 		else if(dna.position.Equals(basecamp4)) {
 			destination = origin;
+		}
+
+		FadeOut();
+		Invoke ("SetPosition", 2.5f);
+		Invoke ("FadeIn", 2.5f);
+	}
+
+	[Command]
+	public void CmdBasecampBackward(){
+		RpcBasecampBackward ();
+	}
+
+	[ClientRpc]
+	public void RpcBasecampBackward(){
+		Vector3 origin = new Vector3 (0, 0, 0);
+		Vector3 basecamp1 = new Vector3 (1000, 0, 0);
+		Vector3 basecamp2 = new Vector3 (2000, 0, 0);
+		Vector3 basecamp3 = new Vector3 (1000, 1000, 0);
+		Vector3 basecamp4 = new Vector3 (1000, 0, 1000);
+
+
+		if (dna.position.Equals(origin)) {
+			destination = basecamp4;
+		} else if(dna.position.Equals(basecamp1)) {
+			destination = origin;
+		}
+		else if(dna.position.Equals(basecamp2)) {
+			destination = basecamp1;
+		}
+		else if(dna.position.Equals(basecamp3)) {
+			destination = basecamp2;
+		}
+		else if(dna.position.Equals(basecamp4)) {
+			destination = basecamp3;
 		}
 
 		FadeOut();
