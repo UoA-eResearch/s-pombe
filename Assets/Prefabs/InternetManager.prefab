@@ -50,12 +50,11 @@ MonoBehaviour:
   m_ScriptCRCCheck: 1
   m_MaxDelay: 0.01
   m_LogLevel: 2
-  m_PlayerPrefab: {fileID: 1661263218189500, guid: 4b56f4de1fd3f484f92b807ed1252259,
-    type: 2}
+  m_PlayerPrefab: {fileID: 102416, guid: 4b56f4de1fd3f484f92b807ed1252259, type: 2}
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 0
-  m_OfflineScene: 
-  m_OnlineScene: 
+  m_OfflineScene: Singleuser
+  m_OnlineScene: Multiuser
   m_SpawnPrefabs:
   - {fileID: 1953345350646216, guid: deeff24351bb33449ad51a8975107842, type: 2}
   - {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}
@@ -102,7 +101,7 @@ MonoBehaviour:
     m_MaxTimerTimeout: 12000
     m_MinNetSimulatorTimeout: 1
     m_MaxNetSimulatorTimeout: 12000
-  m_Channels: 
+  m_Channels: 0500000000000000
   m_UseWebSockets: 0
   m_UseSimulator: 0
   m_SimulatedLatency: 1
@@ -115,8 +114,6 @@ MonoBehaviour:
   matchSize: 4
   isNetworkActive: 0
   matchMaker: {fileID: 0}
-  CreateRoom: 0
-  RoomName: cer
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

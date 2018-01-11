@@ -1,8 +1,7 @@
-﻿using UnityEngine.Networking;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
-public class VRUIItem : NetworkBehaviour
+public class VRUIItem : MonoBehaviour
 {
 	private BoxCollider boxCollider;
 	private RectTransform rectTransform;

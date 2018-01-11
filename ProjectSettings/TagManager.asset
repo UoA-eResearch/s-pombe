@@ -9,6 +9,7 @@ TagManager:
   - DNA
   - Menu
   - Marker
+  - Instructor
   layers:
   - Default
   - TransparentFX
