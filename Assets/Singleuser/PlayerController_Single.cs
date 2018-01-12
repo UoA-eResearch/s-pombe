@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerController_Singleuser : MonoBehaviour
+public class PlayerController_Single : MonoBehaviour
 {
 	public GameObject menu;
 	void ViveControl(int controllerId)

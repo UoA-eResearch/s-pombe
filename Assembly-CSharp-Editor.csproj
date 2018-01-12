@@ -774,6 +774,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_885.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_050.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_393.txt" />
+     <None Include="Assets\Singleuser\InstancedColorSurfaceShader_Single.shader" />
      <None Include="Assets\Resources\Structures\G1_Structure_159.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_229.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_439.txt" />

@@ -4,12 +4,12 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ToggleHandler_Singleuser : MonoBehaviour
+public class ToggleHandler_Single : MonoBehaviour
 {
-	private LoadDat_Singleuser dat;
+	private LoadDat_Single dat;
 	public void Awake()
 	{
-		dat = GameObject.Find("root").GetComponent<LoadDat_Singleuser>();
+		dat = GameObject.Find("root").GetComponent<LoadDat_Single>();
 	}
 	public void Toggle(bool on)
 	{

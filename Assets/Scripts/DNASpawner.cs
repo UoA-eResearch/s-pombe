@@ -14,11 +14,8 @@ public class DNASpawner : NetworkBehaviour {
 
 		if (isLocalPlayer) {
 			if (!isServer) {
-				if (gameObject.tag == "Instructor") {
 					Debug.Log ("spawn now");
 					CmdSpawn ();
-				}
-
 			}
 		}
 	}

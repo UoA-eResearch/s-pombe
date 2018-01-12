@@ -8,7 +8,6 @@ public class VRPawn : NetworkBehaviour {
     public Transform Head;
     public Transform LeftController;
     public Transform RightController;
-	public bool isInstructor;
 
     void Start () {
 		
@@ -16,18 +15,13 @@ public class VRPawn : NetworkBehaviour {
             GetComponentInChildren<SteamVR_ControllerManager>().enabled = true;
             GetComponentsInChildren<SteamVR_TrackedObject>(true).ToList().ForEach(x => x.enabled = true);
             Head.GetComponentsInChildren<MeshRenderer>(true).ToList().ForEach(x => x.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
-			if (isInstructor) {
-				gameObject.name = "Instructor";
-				gameObject.tag = "Instructor";
-			} else {
 				gameObject.name = "LocalPlayer";
 				gameObject.tag = "LocalPlayer";
-			}
 
         } else
         {
-            gameObject.name = "RemotePlayer";
-			gameObject.tag = "RemotePlayer";
+			gameObject.name = "Instructor";
+			gameObject.tag = "Instructor";
         }
 
 	}
