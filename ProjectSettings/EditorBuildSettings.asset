@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: 
     guid: 1a0b1febfb737384aaf9f02b3ca7d516
   - enabled: 0
-    path: Assets/Scenes/Singleuser.unity
+    path: 
     guid: fc245a39872a1424f883fcbd27a6c04a
   - enabled: 1
     path: Assets/Scenes/main.unity
