@@ -108,7 +108,7 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!43 &133313239
+--- !u!43 &54237455
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -481,7 +481,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1179887232
+--- !u!21 &1621030188
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -613,12 +613,12 @@ Prefab:
         type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 133313239}
+      objectReference: {fileID: 54237455}
     - target: {fileID: 23243027482336978, guid: 9d8f057d73b3e494aa92c96e85c9f9b1,
         type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1179887232}
+      objectReference: {fileID: 1621030188}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9d8f057d73b3e494aa92c96e85c9f9b1, type: 2}
   m_IsPrefabParent: 0
