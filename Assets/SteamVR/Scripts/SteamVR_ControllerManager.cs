@@ -7,9 +7,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Valve.VR;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
-public class SteamVR_ControllerManager : NetworkBehaviour
+public class SteamVR_ControllerManager : MonoBehaviour
 {
 	public GameObject left, right;
 	public GameObject[] objects; // populate with objects you want to assign to additional controllers
