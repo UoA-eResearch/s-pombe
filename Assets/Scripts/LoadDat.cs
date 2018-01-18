@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class LoadDat : NetworkBehaviour {
 
+	[SyncVar]
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
