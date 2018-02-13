@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class LoadDat : NetworkBehaviour {
 
-	[SyncVar]
+	//[SyncVar]
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
@@ -132,12 +132,12 @@ public class LoadDat : NetworkBehaviour {
 
 		foreach (var w in weights)
 		{
-			numChoice++;
 			if (w.name == name)
 			{
 				match = w.text;
 				break;
 			}
+			numChoice++;
 		}
 		if (match == "")
 		{
@@ -150,8 +150,7 @@ public class LoadDat : NetworkBehaviour {
 
 
 		var rot = rotations[numChoice];
-		var mat = materials[numChoice + 2];
-		Debug.Log ("Num Choice: " + numChoice);
+		var mat = materials[numChoice + 3];
 
 		for (int i = 0; i < ints.Count; i++)
 		{

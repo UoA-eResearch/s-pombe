@@ -16,13 +16,21 @@ public class VRPawn : NetworkBehaviour {
             //GetComponentsInChildren<SteamVR_TrackedController>(true).ToList().ForEach(x => x.enabled = true);
             GetComponentsInChildren<SteamVR_TrackedObject>(true).ToList().ForEach(x => x.enabled = true);
             Head.GetComponentsInChildren<MeshRenderer>(true).ToList().ForEach(x => x.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
-				gameObject.name = "LocalPlayer";
-				gameObject.tag = "LocalPlayer";
+
+			GameObject menu = GameObject.Find ("Menu(Clone)");
+			menu.name = "LocMenu";
+			Destroy (menu);
+
+			gameObject.name = "LocalPlayer";
+			gameObject.tag = "LocalPlayer";
 
         } else
         {
 			gameObject.name = "Instructor";
 			gameObject.tag = "Instructor";
+
+			GameObject menu = GameObject.Find ("Menu(Clone)");
+			menu.name = "InstrMenu";
         }
 
 	}

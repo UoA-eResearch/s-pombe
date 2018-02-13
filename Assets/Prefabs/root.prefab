@@ -181,7 +181,7 @@ MonoBehaviour:
   index: 0
   spherePrefab: {fileID: 1123130876344440, guid: 32c328ac297361a4bbefbff974ee2624,
     type: 2}
-  markerPrefab: {fileID: 1291137040268400, guid: 6f006a86b9b60a542949f200a5533ad4,
+  markerPrefab: {fileID: 1291137040268400, guid: 57f8fcdd7ba1d894fb5c49761cfcb5cd,
     type: 2}
   colors: []
   menuPrefab: {fileID: 1276666566760288, guid: 2e72136ee20ba3942b482a9d18671cf0, type: 2}

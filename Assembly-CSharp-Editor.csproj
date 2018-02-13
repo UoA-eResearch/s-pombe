@@ -147,6 +147,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_568.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_526.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_136.txt" />
+     <None Include="Assets\Resources\Genes\Chromosome 1.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_120.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_940.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_653.txt" />
@@ -435,6 +436,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_685.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_072.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_735.txt" />
+     <None Include="Assets\Resources\Genes\Chromosome 3.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_127.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_741.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_110.txt" />
@@ -681,6 +683,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_412.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_572.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_633.txt" />
+     <None Include="Assets\Resources\Genes\Chromosome 2.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_196.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_308.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_910.txt" />

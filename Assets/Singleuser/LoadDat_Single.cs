@@ -61,12 +61,12 @@ public class LoadDat_Single : MonoBehaviour {
 		var match = "";
 		foreach (var w in weights)
 		{
-			numChoice++;
 			if (w.name == name)
 			{
 				match = w.text;
 				break;
 			}
+			numChoice++;
 		}
 		if (match == "")
 		{
@@ -79,7 +79,7 @@ public class LoadDat_Single : MonoBehaviour {
 
 
 		var rot = rotations[numChoice];
-		var mat = materials[numChoice + 2];
+		var mat = materials[numChoice + 3];
 
 		for (int i = 0; i < ints.Count; i++)
 		{
