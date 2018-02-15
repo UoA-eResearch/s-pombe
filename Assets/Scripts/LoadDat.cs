@@ -82,11 +82,28 @@ public class LoadDat : NetworkBehaviour {
 		}
 	}
 
+	public void DeleteDNA()
+	{
+		Debug.Log("You have clicked the button!");
+	}
+
+
+	[Command]
+	public void CmdDelete(){
+		RpcDelete ();
+	}
+
+	[ClientRpc]
+	public void RpcDelete(){
+		Debug.Log ("dna object valid?" + this.gameObject);
+		NetworkServer.Destroy (this.gameObject);
+	}
+
+
 	[Command]
 	public void CmdToggle(bool on, string name)
 	{
 		var dna = GameObject.FindGameObjectWithTag ("DNA");
-
 		var dat = dna.GetComponent<LoadDat>();
 
 		if (on)
@@ -102,17 +119,15 @@ public class LoadDat : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdLoadNext()
+	public void CmdLoadFromDat(){
+		RpcLoadFromDat ();
+	}
+
+
+	[Command]
+	public void CmdLoadWeight(String name)
 	{
-		index++;
-		RpcLoadFromDat();
-		foreach (var t in toggles)
-		{
-			if (t.GetComponent<Toggle>().isOn)
-			{
-				RpcLoadWeight(t.name);
-			}
-		}
+		RpcLoadWeight (name);
 	}
 
 	public Color32[] getColors(){
