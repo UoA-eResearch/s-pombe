@@ -177,6 +177,16 @@ public class LoadDat : NetworkBehaviour {
 		var ints = lines.Where(s => s != "").Select(s => Convert.ToInt16(s)).ToList();
 		Debug.Log("min: " + ints.Min() + ", max: " + ints.Max());
 
+		if (markers.Count == 0) {
+			colors = gameObject.GetComponent<LoadDat> ().getColors ();
+
+			var count = 0;
+			foreach (var w in weights)
+			{
+				markers.Add(w.name, new List<GameObject>());
+				count += 1;
+			}
+		}
 
 		var rot = rotations[numChoice];
 		var mat = materials[numChoice + 3];
