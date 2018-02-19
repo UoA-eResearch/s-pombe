@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class LoadDat : NetworkBehaviour {
 
 	//[SyncVar]
-	public int index = 0;
+	public int index;
 	TextAsset[] structures;
 	TextAsset[] weights;
 	public GameObject spherePrefab;
@@ -22,12 +22,15 @@ public class LoadDat : NetworkBehaviour {
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	public List<GameObject> toggles = new List<GameObject>();
 
+
 	[ClientRpc]
 	public void RpcLoadFromDat()
 	{
+		index = GameObject.FindGameObjectWithTag ("LocalPlayer").GetComponent<DNASpawner> ().getIndex ();
+
 		gameObject.tag = "DNA";
 		structures = Resources.LoadAll<TextAsset>("Structures/");
-		Debug.Log(structures.Length + " structures ");
+		Debug.Log(structures.Length + " structures " + "index" + index);
 
 		InitColors();
 		InitRotations();
@@ -53,6 +56,7 @@ public class LoadDat : NetworkBehaviour {
 			spheres.Add(sphere);
 		}
 	}
+
 
 
 	[ClientRpc]
@@ -82,14 +86,23 @@ public class LoadDat : NetworkBehaviour {
 		}
 	}
 
+	[ClientRpc]
+	public void RpcAssignButton(GameObject menu){
+		Debug.Log ("In Assign Button");
+		Button nextBut = menu.GetComponentInChildren<Button> ();
+		nextBut.onClick.AddListener (DeleteDNA);
+	}
+
 	public void DeleteDNA()
 	{
-		Debug.Log("You have clicked the button!");
+		Debug.Log("You have clicked the button!" + index);
+		CmdDelete ();
 	}
 
 
 	[Command]
 	public void CmdDelete(){
+		Debug.Log ("In CmdDelete");
 		RpcDelete ();
 	}
 
@@ -97,6 +110,7 @@ public class LoadDat : NetworkBehaviour {
 	public void RpcDelete(){
 		Debug.Log ("dna object valid?" + this.gameObject);
 		NetworkServer.Destroy (this.gameObject);
+		GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<DNASpawner> ().InstantiateDNA();
 	}
 
 
