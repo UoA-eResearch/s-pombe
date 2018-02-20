@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class LoadDat : NetworkBehaviour {
 
-	//[SyncVar]
 	public int index;
 	TextAsset[] structures;
 	TextAsset[] weights;
@@ -88,27 +87,23 @@ public class LoadDat : NetworkBehaviour {
 
 	[ClientRpc]
 	public void RpcAssignButton(GameObject menu){
-		Debug.Log ("In Assign Button");
 		Button nextBut = menu.GetComponentInChildren<Button> ();
 		nextBut.onClick.AddListener (DeleteDNA);
 	}
 
 	public void DeleteDNA()
 	{
-		Debug.Log("You have clicked the button!" + index);
 		CmdDelete ();
 	}
 
 
 	[Command]
 	public void CmdDelete(){
-		Debug.Log ("In CmdDelete");
 		RpcDelete ();
 	}
 
 	[ClientRpc]
 	public void RpcDelete(){
-		Debug.Log ("dna object valid?" + this.gameObject);
 		NetworkServer.Destroy (this.gameObject);
 		GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<DNASpawner> ().InstantiateDNA();
 	}

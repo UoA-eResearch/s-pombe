@@ -1,5 +1,4 @@
-﻿
-     gene            complement(<1..5662)
+﻿     gene            complement(<1..5662)
                      /locus_tag="SPAC212.11"
                      /db_xref="GeneID:2541932"
      mRNA            complement(<1..>5662)

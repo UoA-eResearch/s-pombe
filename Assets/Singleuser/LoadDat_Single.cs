@@ -5,12 +5,15 @@ using System;
 using UnityEngine.UI;
 
 public class LoadDat_Single : MonoBehaviour {
+	
 
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
+	TextAsset[] genes;
 	public GameObject spherePrefab;
 	public GameObject markerPrefab;
+	public GameObject genePrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion[] rotations;
 	private Color32[] colors;
@@ -40,6 +43,47 @@ public class LoadDat_Single : MonoBehaviour {
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
 			spheres.Add(sphere);
 		}
+		Debug.Log ("Count of spheres: " + spheres.Count);
+		LoadGenes ();
+	}
+
+	void LoadGenes(){
+		genes = Resources.LoadAll<TextAsset>("Genes/");
+
+		var chromosome1 = genes [0];
+		var chromosome2 = genes [1];
+		var chromosome3 = genes [2];
+		Debug.Log ("chr1 " + chromosome1);
+
+		string[] linesChrom1 = chromosome1.text.Split ('\n');
+		Debug.Log ("String " + linesChrom1[1]);
+
+
+		//var searchString = "/locus_tag=\"SPAC17C9.14\"";
+		//if (l.Contains (searchString) == true) {
+		//	Debug.Log("Found it: " + l);
+		//}
+
+
+
+		foreach (string l in linesChrom1) {
+			
+		}
+
+
+
+		//for (int i = 0; i < linesChrom1.Length; i++) {
+			//var l = linesChrom1 [i];
+			//Debug.Log (l);
+			//if (l.Length == 0)
+				//continue;
+			//var bits = l.Split ();
+			//if (bits.Length == 2) {
+				//string name = bits [0];
+				//string info = bits [1];
+			//Debug.Log(name.ToString()); //+ " " + info);
+			//}
+		//}
 	}
 
 	public void LoadNext()
@@ -195,7 +239,6 @@ public class LoadDat_Single : MonoBehaviour {
 
 		foreach (var w in weights)
 		{
-			Color color = colors[count];
 			var toggle = Instantiate(togglePrefab, menu.transform);
 			toggle.GetComponentInChildren<Text>().text = w.name;
 			toggle.GetComponentInChildren<Text>().color = colors[count];

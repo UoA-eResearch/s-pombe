@@ -8,12 +8,10 @@ public class DNASpawner : NetworkBehaviour {
 
 	public GameObject dnaPrefab;
 	public GameObject menuPrefab;
-	//[SyncVar]
 	public int ind;
 
 	public void Start(){
 		
-		Debug.Log ("in start client");
 
 		if (isLocalPlayer) {
 			ind = 0;
