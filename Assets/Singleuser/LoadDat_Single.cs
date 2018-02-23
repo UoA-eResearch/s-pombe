@@ -3,14 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class LoadDat_Single : MonoBehaviour {
-	
 
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
-	TextAsset[] genes;
+	TextAsset[] geneFiles;
 	public GameObject spherePrefab;
 	public GameObject markerPrefab;
 	public GameObject genePrefab;
@@ -20,14 +20,21 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
+	public Dictionary<string, List<string>> genesChrom1 = new Dictionary<string, List<string>>();
+	public Dictionary<string, List<string>> genesChrom2 = new Dictionary<string, List<string>>();
+	public Dictionary<string, List<string>> genesChrom3 = new Dictionary<string, List<string>>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	private List<GameObject> toggles = new List<GameObject>();
+	private string searchString = "";
+	private int[] numberOfChromosomes;
 
 	void LoadFromDat()
 	{
 		foreach (GameObject go in spheres) Destroy(go);
 		spheres = new List<GameObject>();
+		numberOfChromosomes = new int[]{0, 0, 0};
 		var lines = structures[index].text.Split('\n');
+
 		for (int i = 0; i < lines.Length; i++)
 		{
 			var l = lines[i];
@@ -38,53 +45,230 @@ public class LoadDat_Single : MonoBehaviour {
 			var y = float.Parse(bits[2]);
 			var z = float.Parse(bits[3]);
 			var sphere = Instantiate(spherePrefab, transform);
-			sphere.name = i.ToString();
+			sphere.name = i.ToString() + "Chrom: " + c;
+			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
 			spheres.Add(sphere);
 		}
 		Debug.Log ("Count of spheres: " + spheres.Count);
-		LoadGenes ();
+
+		genesChrom1.Add ("Chromosome 1", null);
+		genesChrom2.Add ("Chromosome 2", null);
+		genesChrom3.Add ("Chromosome 3", null);
+
+		ReadGeneFiles (genesChrom1, 0);
+		ReadGeneFiles (genesChrom2, 1);
+		ReadGeneFiles (genesChrom3, 2);
+		LoadGenesByString (genesChrom1);
+		LoadGenesByString (genesChrom2);
+		LoadGenesByString (genesChrom3);
+
+		LoadGenesByClickSphere (genesChrom1, 10);
+		LoadGenesByClickSphere (genesChrom2, 10);
+		LoadGenesByClickSphere (genesChrom3, 10);
 	}
 
-	void LoadGenes(){
-		genes = Resources.LoadAll<TextAsset>("Genes/");
+	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
+		geneFiles = Resources.LoadAll<TextAsset>("Genes/");
 
-		var chromosome1 = genes [0];
-		var chromosome2 = genes [1];
-		var chromosome3 = genes [2];
-		Debug.Log ("chr1 " + chromosome1);
+		var chromosomeFile = geneFiles [fileNum];
 
-		string[] linesChrom1 = chromosome1.text.Split ('\n');
-		Debug.Log ("String " + linesChrom1[1]);
+		string[] linesChrom1 = chromosomeFile.text.Split ('\n');
 
+		List<string> tempList = new List<string> ();
+		string name = "";
 
-		//var searchString = "/locus_tag=\"SPAC17C9.14\"";
-		//if (l.Contains (searchString) == true) {
-		//	Debug.Log("Found it: " + l);
-		//}
-
-
-
-		foreach (string l in linesChrom1) {
+		foreach (string line in linesChrom1) {
 			
+			if (line.StartsWith ("gene ")) {
+				var pos = CalculateSpherePosition (line);
+				if (pos != null) {
+
+					if (name != "") {
+						genes.Add (name, tempList);
+						name = "";
+					}
+
+					name = pos;
+					tempList = new List<string> ();
+				}
+			}
+
+			tempList.Add (line);
+
+			if (line.Contains ("locus_tag") == true && name.Contains("locus_tag") == false) {
+				name = name + " " + line;
+			}
+			if (line.Contains ("protein_id") == true && name.Contains("protein_id") == false) {
+				name = name + " " + line;
+			}
+			if (line.Contains ("gene_synonym") == true && name.Contains("gene_synonym") == false) {
+				name = name + " " + line;
+			}
 		}
-
-
-
-		//for (int i = 0; i < linesChrom1.Length; i++) {
-			//var l = linesChrom1 [i];
-			//Debug.Log (l);
-			//if (l.Length == 0)
-				//continue;
-			//var bits = l.Split ();
-			//if (bits.Length == 2) {
-				//string name = bits [0];
-				//string info = bits [1];
-			//Debug.Log(name.ToString()); //+ " " + info);
-			//}
-		//}
 	}
+
+	string CalculateSpherePosition(string line){
+		var words = line.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		string locationInfo = words [1];
+		var numbers = locationInfo.Split (new string[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+		string from = "";
+		string to = "";
+		try {
+			from = numbers [0];
+			to = numbers [1];
+
+			from = Regex.Match (from, @"\d+").Value;
+			to = Regex.Match (to, @"\d+").Value;
+
+			int fromNum = Int32.Parse (from) / 3583;
+			int toNum = Int32.Parse (to) / 3583;
+
+			string pos = fromNum + " " + toNum;
+			return pos;
+		} catch (Exception e) {return null;}
+	}
+
+
+	void LoadGenesByString(Dictionary<string, List<string>> genes){
+
+		foreach (var dictEntry in genes) {
+			if (dictEntry.Key.Contains (searchString) || searchString == "") {
+
+				if(dictEntry.Key.Contains("Chromosome")){continue;}
+
+				var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+				var fromNum = Int32.Parse(words [0]);
+				var toNum = Int32.Parse(words [1]);
+
+				Debug.Log (fromNum + " " + genes.First().Key);
+
+				if (genes.First ().Key == "Chromosome 1") {}
+				else if(genes.First ().Key == "Chromosome 2") {
+					fromNum = numberOfChromosomes[0] + fromNum;
+					toNum = numberOfChromosomes[0] + toNum;
+				}else if(genes.First ().Key == "Chromosome 3") {
+					fromNum = numberOfChromosomes[0] + numberOfChromosomes[1] + fromNum;
+					toNum = numberOfChromosomes[0] + numberOfChromosomes[1] + toNum;
+				}
+
+				Debug.Log (fromNum + " " + genes.First().Key);
+				var location = spheres [fromNum + 1].transform.position;
+
+
+				if (fromNum > 0) {
+					//location = Vector3.Lerp (spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, 0.5f);
+					//location = CalculateCubicBezierPoint (i, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position);
+					Vector3 posSphereFirst = spheres [fromNum].transform.position;
+					Vector3 posBeforeFirst = spheres [fromNum - 1].transform.position;
+					Vector3 posAfterFirst = spheres [fromNum + 1].transform.position;
+
+					Vector3 startPoint = CalculateCubicBezierPoint (0.5f, posBeforeFirst, posSphereFirst, posBeforeFirst, posSphereFirst);
+
+					Vector3 posSphereLast = spheres [toNum].transform.position;
+					Vector3 posBeforeLast = spheres [toNum - 1].transform.position;
+					Vector3 posAfterLast = spheres [toNum + 1].transform.position;
+
+					Vector3 endPoint = CalculateCubicBezierPoint (0.5f, posSphereLast, posAfterLast, posSphereLast, posAfterLast);
+
+					var direction = posAfterLast - posBeforeFirst;
+					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
+					DrawALine (startPoint, endPoint, fromNum, direction, geneName);
+				}
+			}
+		}
+	}
+
+	void LoadGenesByClickSphere(Dictionary<string, List<string>> genes, int sphereNum){
+
+		foreach (var dictEntry in genes) {
+			if(dictEntry.Key.Contains("Chromosome")){continue;}
+			
+			var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+			var fromNum = Int32.Parse(words [0]);
+			var toNum = Int32.Parse(words [1]);
+
+			if (genes.First ().Key == "Chromosome 1") {}
+			else if(genes.First ().Key == "Chromosome 2") {
+				fromNum = numberOfChromosomes[0] + fromNum;
+				toNum = numberOfChromosomes[0] + toNum;
+			}else if(genes.First ().Key == "Chromosome 3") {
+				fromNum = numberOfChromosomes[0] + numberOfChromosomes[1] + fromNum;
+				toNum = numberOfChromosomes[0] + numberOfChromosomes[1] + toNum;
+			}
+
+			if (sphereNum >= fromNum && sphereNum <= toNum) {
+				var location = spheres [fromNum + 1].transform.position;
+
+
+				if (fromNum > 0) {
+					//location = Vector3.Lerp (spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, 0.5f);
+					//location = CalculateCubicBezierPoint (i, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position);
+					Vector3 posSphereFirst = spheres [fromNum].transform.position;
+					Vector3 posBeforeFirst = spheres [fromNum - 1].transform.position;
+					Vector3 posAfterFirst = spheres [fromNum + 1].transform.position;
+
+					Vector3 startPoint = CalculateCubicBezierPoint (0.5f, posBeforeFirst, posSphereFirst, posBeforeFirst, posSphereFirst);
+
+					Vector3 posSphereLast = spheres [toNum].transform.position;
+					Vector3 posBeforeLast = spheres [toNum - 1].transform.position;
+					Vector3 posAfterLast = spheres [toNum + 1].transform.position;
+
+					Vector3 endPoint = CalculateCubicBezierPoint (0.5f, posSphereLast, posAfterLast, posSphereLast, posAfterLast);
+
+					var direction = posAfterLast - posBeforeFirst;
+					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
+					DrawALine (startPoint, endPoint, fromNum, direction, geneName);
+				}
+			}
+		}
+	}
+
+	private void DrawALine(Vector3 inputPosA, Vector3 inputPosB, int indexFirstSphere, Vector3 direction, String name) 
+	{
+		float Ancho = 0.0f;
+		float Alto = 2.0f;
+		Vector3 result;
+
+		Vector3 posC = ((inputPosB - inputPosA) * 0.5F ) + inputPosA;
+		posC = posC + new Vector3 (0, 0, 0);
+		float lengthC = (inputPosB - inputPosA).magnitude; 
+		float sineC= ( inputPosB.y - inputPosA.y ) / lengthC; 
+		float angleC = Mathf.Asin( sineC ) * Mathf.Rad2Deg; 
+		if (inputPosB.x < inputPosA.x) {angleC = 0 - angleC;} 
+
+		Debug.Log( "inputPosA" + inputPosA + " : inputPosB" + inputPosB + " : posC" + posC + " : lengthC " + lengthC + " : sineC " + sineC + " : angleC " + angleC );
+
+		GameObject gene = Instantiate( genePrefab, spheres[indexFirstSphere].transform.position, Quaternion.identity);
+		//gene.transform.localScale = new Vector3(lengthC, Ancho, Alto);
+		gene.transform.localPosition = inputPosA;
+		gene.transform.localScale = new Vector3(direction.x, 0, 10);
+		gene.transform.rotation = Quaternion.Euler(0, 0, angleC);
+		gene.transform.LookAt (direction);
+		gene.name = name;
+		gene.GetComponent<Renderer> ().SetPropertyBlock (materials [4]);
+		//genes.Add (gene);
+	}
+
+	private Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+	{
+		float u = 1 - t;
+		float tt = t * t;
+		float uu = u * u;
+		float uuu = uu * u;
+		float ttt = tt * t;
+
+		Vector3 p = uuu * p0; 
+		p += 3 * uu * t * p1; 
+		p += 3 * u * tt * p2; 
+		p += ttt * p3; 
+
+		return p;
+	}
+
 
 	public void LoadNext()
 	{
