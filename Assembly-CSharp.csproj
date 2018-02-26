@@ -46,6 +46,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\ErrorReporter.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardComponent.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardCreator.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardItem.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardRaycaster.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardStatus.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\MouseCam.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\SpaceMeshCreator.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\UvSlicer.cs" />
      <Compile Include="Assets\Scripts\CustomNetworkDiscovery.cs" />
      <Compile Include="Assets\Scripts\DNASpawner.cs" />
      <Compile Include="Assets\Scripts\InternetManager.cs" />
@@ -485,6 +494,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_348.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_419.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_251.txt" />
+     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\CHANGE_LOG.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_255.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_175.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_329.txt" />
@@ -550,6 +560,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_269.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_198.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_911.txt" />
+     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\README.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_482.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_520.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_708.txt" />

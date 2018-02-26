@@ -46,6 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\Editor\KeyboardCreatorEditor.cs" />
+     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\Editor\KeyboardStatusEditor.cs" />
      <Compile Include="Assets\SteamVR\Editor\SteamVR_Editor.cs" />
      <Compile Include="Assets\SteamVR\Editor\SteamVR_Preferences.cs" />
      <Compile Include="Assets\SteamVR\Editor\SteamVR_RenderModelEditor.cs" />
@@ -387,6 +389,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_348.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_419.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_251.txt" />
+     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\CHANGE_LOG.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_255.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_175.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_329.txt" />
@@ -452,6 +455,7 @@
      <None Include="Assets\Resources\Structures\G1_Structure_269.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_198.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_911.txt" />
+     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\README.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_482.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_520.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_708.txt" />

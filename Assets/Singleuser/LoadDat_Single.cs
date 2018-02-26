@@ -458,7 +458,12 @@ public class LoadDat_Single : MonoBehaviour {
 	private void LoadDropdownGeneTags(){
 		var dropdown = GameObject.Find("GeneTags").GetComponent<Dropdown> ();
 		dropdown.options.Clear ();
+		var count = 0;
 		foreach (string tag in changingDropdownGeneTags) {
+			count++;
+			if (count > 20) {
+				break;
+			}
 			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
 		}
 	}
