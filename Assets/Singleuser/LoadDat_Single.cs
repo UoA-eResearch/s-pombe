@@ -20,6 +20,9 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
+	private List<GameObject> genes = new List<GameObject>();
+	private List<string> allGeneTags = new List<string>();
+	private List<string> changingDropdownGeneTags = new List<string>();
 	public Dictionary<string, List<string>> genesChrom1 = new Dictionary<string, List<string>>();
 	public Dictionary<string, List<string>> genesChrom2 = new Dictionary<string, List<string>>();
 	public Dictionary<string, List<string>> genesChrom3 = new Dictionary<string, List<string>>();
@@ -53,20 +56,7 @@ public class LoadDat_Single : MonoBehaviour {
 		}
 		Debug.Log ("Count of spheres: " + spheres.Count);
 
-		genesChrom1.Add ("Chromosome 1", null);
-		genesChrom2.Add ("Chromosome 2", null);
-		genesChrom3.Add ("Chromosome 3", null);
 
-		ReadGeneFiles (genesChrom1, 0);
-		ReadGeneFiles (genesChrom2, 1);
-		ReadGeneFiles (genesChrom3, 2);
-		LoadGenesByString (genesChrom1);
-		LoadGenesByString (genesChrom2);
-		LoadGenesByString (genesChrom3);
-
-		LoadGenesByClickSphere (genesChrom1, 10);
-		LoadGenesByClickSphere (genesChrom2, 10);
-		LoadGenesByClickSphere (genesChrom3, 10);
 	}
 
 	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
@@ -173,9 +163,9 @@ public class LoadDat_Single : MonoBehaviour {
 
 					Vector3 endPoint = CalculateCubicBezierPoint (0.5f, posSphereLast, posAfterLast, posSphereLast, posAfterLast);
 
-					var direction = posAfterLast - posBeforeFirst;
+					var direction = posAfterLast;
 					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
-					DrawALine (startPoint, endPoint, fromNum, direction, geneName);
+					InstantiateGene (startPoint, endPoint, fromNum, direction, geneName);
 				}
 			}
 		}
@@ -219,22 +209,21 @@ public class LoadDat_Single : MonoBehaviour {
 
 					Vector3 endPoint = CalculateCubicBezierPoint (0.5f, posSphereLast, posAfterLast, posSphereLast, posAfterLast);
 
-					var direction = posAfterLast - posBeforeFirst;
+					var direction = posAfterLast;
 					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
-					DrawALine (startPoint, endPoint, fromNum, direction, geneName);
+					InstantiateGene (startPoint, endPoint, fromNum, direction, geneName);
 				}
 			}
 		}
 	}
 
-	private void DrawALine(Vector3 inputPosA, Vector3 inputPosB, int indexFirstSphere, Vector3 direction, String name) 
+	private void InstantiateGene(Vector3 inputPosA, Vector3 inputPosB, int indexFirstSphere, Vector3 direction, String name) 
 	{
-		float Ancho = 0.0f;
-		float Alto = 2.0f;
-		Vector3 result;
+		float Ancho = 40.0f;
+		float Alto = 40.0f;
 
 		Vector3 posC = ((inputPosB - inputPosA) * 0.5F ) + inputPosA;
-		posC = posC + new Vector3 (0, 0, 0);
+		//posC = posC + new Vector3 (20, 20, 20);
 		float lengthC = (inputPosB - inputPosA).magnitude; 
 		float sineC= ( inputPosB.y - inputPosA.y ) / lengthC; 
 		float angleC = Mathf.Asin( sineC ) * Mathf.Rad2Deg; 
@@ -242,15 +231,16 @@ public class LoadDat_Single : MonoBehaviour {
 
 		Debug.Log( "inputPosA" + inputPosA + " : inputPosB" + inputPosB + " : posC" + posC + " : lengthC " + lengthC + " : sineC " + sineC + " : angleC " + angleC );
 
-		GameObject gene = Instantiate( genePrefab, spheres[indexFirstSphere].transform.position, Quaternion.identity);
-		//gene.transform.localScale = new Vector3(lengthC, Ancho, Alto);
-		gene.transform.localPosition = inputPosA;
-		gene.transform.localScale = new Vector3(direction.x, 0, 10);
+		GameObject gene = Instantiate( genePrefab, transform);
+		gene.transform.localScale = new Vector3(Alto, Ancho, lengthC);
+		gene.transform.localPosition = posC;
+		//gene.transform.localScale = new Vector3(direction.x, 0, 10);
 		gene.transform.rotation = Quaternion.Euler(0, 0, angleC);
 		gene.transform.LookAt (direction);
-		gene.name = name;
-		gene.GetComponent<Renderer> ().SetPropertyBlock (materials [4]);
-		//genes.Add (gene);
+		gene.name = "Gene " + name;
+		//gene.GetComponent<Renderer> ().SetPropertyBlock (materials [4]);
+		//gene.GetComponent<Renderer> ().material.SetColor("_Color", new Color(0.01176471f, 0.9215686f, 0.6705883f, 0.9f));
+		genes.Add (gene);
 	}
 
 	private Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
@@ -435,6 +425,67 @@ public class LoadDat_Single : MonoBehaviour {
 			count += 1;
 		}
 		LoadFromDat();
+
+		genesChrom1.Add ("Chromosome 1", null);
+		genesChrom2.Add ("Chromosome 2", null);
+		genesChrom3.Add ("Chromosome 3", null);
+
+		ReadGeneFiles (genesChrom1, 0);
+		ReadGeneFiles (genesChrom2, 1);
+		ReadGeneFiles (genesChrom3, 2);
+
+		InstantiateDropdownList (genesChrom1);
+		InstantiateDropdownList (genesChrom2);
+		InstantiateDropdownList (genesChrom3);
+
+		LoadDropdownGeneTags ();
+
+		//LoadGenesByClickSphere (genesChrom1, 10);
+		//LoadGenesByClickSphere (genesChrom2, 10);
+		//LoadGenesByClickSphere (genesChrom3, 10);
+	}
+
+	private void InstantiateDropdownList(Dictionary<string, List<string>> genes){
+		allGeneTags.Add ("No Tag Selected");
+		foreach (var gene in genes) {
+			if (gene.Value != null) {
+				allGeneTags.Add (gene.Key);
+			}
+		}
+		changingDropdownGeneTags.AddRange (allGeneTags);
+	}
+
+	private void LoadDropdownGeneTags(){
+		var dropdown = GameObject.Find("GeneTags").GetComponent<Dropdown> ();
+		dropdown.options.Clear ();
+		foreach (string tag in changingDropdownGeneTags) {
+			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
+		}
+	}
+
+	public void DropdownInputChanged(int inputChoice){
+		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
+
+		foreach (var gene in genes) {
+			Destroy (gene);
+		}
+
+		LoadGenesByString (genesChrom1);
+		LoadGenesByString (genesChrom2);
+		LoadGenesByString (genesChrom3);
+	}
+
+	public void SearchInputChanged(string inputText){
+		
+		changingDropdownGeneTags = new List<string> ();
+		changingDropdownGeneTags.Add ("No Tag Selected");
+		foreach (var tag in allGeneTags) {
+			if (tag.Contains (inputText)) {
+				changingDropdownGeneTags.Add (tag);
+			}
+		}
+
+		LoadDropdownGeneTags ();
 	}
 
 	// Update is called once per frame
