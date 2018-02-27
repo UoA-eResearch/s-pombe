@@ -46,15 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\ErrorReporter.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardComponent.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardCreator.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardItem.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardRaycaster.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\KeyboardStatus.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\MouseCam.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\SpaceMeshCreator.cs" />
-     <Compile Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Resources\Scripts\UvSlicer.cs" />
      <Compile Include="Assets\Scripts\CustomNetworkDiscovery.cs" />
      <Compile Include="Assets\Scripts\DNASpawner.cs" />
      <Compile Include="Assets\Scripts\InternetManager.cs" />
@@ -159,6 +150,16 @@
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
+     <Compile Include="Assets\Tales From The Rift\CanvasKeyboard\Demo\CanvasKeyboardEditableButton.cs" />
+     <Compile Include="Assets\Tales From The Rift\CanvasKeyboard\Demo\ToggleKeyboard.cs" />
+     <Compile Include="Assets\Tales From The Rift\CanvasKeyboard\Scripts\CanvasKeyboard.cs" />
+     <Compile Include="Assets\Tales From The Rift\CanvasKeyboard\Scripts\CanvasKeyboardASCII.cs" />
+     <Compile Include="Assets\Tales From The Rift\CanvasKeyboard\Scripts\OpenCanvasKeyboard.cs" />
+     <Compile Include="Assets\Tales From The Rift\Gaze\Demo\ButtonListener.cs" />
+     <Compile Include="Assets\Tales From The Rift\Gaze\Demo\CubeListener.cs" />
+     <Compile Include="Assets\Tales From The Rift\Gaze\Demo\GazeCrosshairOnOff.cs" />
+     <Compile Include="Assets\Tales From The Rift\Gaze\GazeInputModule.cs" />
+     <Compile Include="Assets\Tales From The Rift\Gaze\GazeInputModuleCrosshair.cs" />
      <None Include="Assets\Resources\Structures\G1_Structure_256.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_493.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_332.txt" />
@@ -494,7 +495,6 @@
      <None Include="Assets\Resources\Structures\G1_Structure_348.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_419.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_251.txt" />
-     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\CHANGE_LOG.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_255.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_175.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_329.txt" />
@@ -560,7 +560,6 @@
      <None Include="Assets\Resources\Structures\G1_Structure_269.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_198.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_911.txt" />
-     <None Include="Assets\Handcrafted Mobile\CurvedVRKeyboard\Documentation\README.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_482.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_520.txt" />
      <None Include="Assets\Resources\Structures\G1_Structure_708.txt" />

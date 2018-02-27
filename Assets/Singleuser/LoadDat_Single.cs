@@ -418,7 +418,7 @@ public class LoadDat_Single : MonoBehaviour {
 			toggle.GetComponentInChildren<Text>().color = colors[count];
 			//toggle.GetComponentInChildren<CanvasRenderer>().SetColor(colors[count]);
 			toggle.name = w.name;
-			toggle.transform.localPosition = new Vector3(0, y, 0);
+			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
 			toggles.Add(toggle);
 			y -= 30;
 			markers.Add(w.name, new List<GameObject>());
