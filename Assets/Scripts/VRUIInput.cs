@@ -30,6 +30,10 @@ public class VRUIInput : MonoBehaviour
 	{
 		if (EventSystem.current.currentSelectedGameObject != null)
 		{
+            if (EventSystem.current.currentSelectedGameObject.GetComponent("Scrollbar") != null)
+            {
+                EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value += .1f;
+            }
 			ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
 		}
 	}
