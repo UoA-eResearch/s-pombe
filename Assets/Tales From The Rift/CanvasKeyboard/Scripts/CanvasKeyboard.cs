@@ -19,14 +19,17 @@ namespace TalesFromTheRift
 		{
 			// Don't open the keyboard if it is already open for the current input object
 			CanvasKeyboard keyboard = GameObject.FindObjectOfType<CanvasKeyboard>();
+			/*
 			if (keyboard == null || (keyboard != null && keyboard.inputObject != inputObject))
 			{
 				Close();
 				keyboard = Instantiate<CanvasKeyboard>(Resources.Load<CanvasKeyboard>("CanvasKeyboard"));
 				keyboard.transform.SetParent(canvas.transform, false);
 				keyboard.inputObject = inputObject;
-			}
+			}*/
+
 			return keyboard;
+
 		}
 		
 		public static void Close()
@@ -112,7 +115,8 @@ namespace TalesFromTheRift
 
 		public void CloseKeyboard()
 		{
-			Destroy(gameObject);
+			gameObject.SetActive (false);
+			//Destroy(gameObject);
 		}
 
 		#endregion
