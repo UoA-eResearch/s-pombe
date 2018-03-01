@@ -51,18 +51,22 @@ public class VRUIInput : MonoBehaviour
 		var textInput = e.target.GetComponent<InputField>();
 		if (textInput != null)
 		{
-			//textInput.ActivateInputField ();
 			textInput.Select ();
 			Debug.Log("HandlePointerIn text input", e.target.gameObject);
 		}
 		var dropdown = e.target.GetComponent<Dropdown>();
 		if (dropdown != null)
 		{
-			//textInput.ActivateInputField ();
-			dropdown.Select ();
-			Debug.Log("HandlePointerIn dropdown", e.target.gameObject);
+            dropdown.Select ();
+            Debug.Log("HandlePointerIn dropdown", e.target.gameObject);
 		}
-	}
+        var scrollbar = e.target.GetComponent<Scrollbar>();
+        if (scrollbar != null)
+        {
+            Debug.Log("HandlePointerIn Scrollbar", e.target.gameObject);
+            scrollbar.Select();
+        }
+    }
 
 	private void HandlePointerOut(object sender, PointerEventArgs e)
 	{
@@ -71,10 +75,12 @@ public class VRUIInput : MonoBehaviour
 		var toggle = e.target.GetComponent<Toggle>();
 		var textInput = e.target.GetComponent<InputField>();
 		var dropdown = e.target.GetComponent<Dropdown>();
-		if (button != null || toggle != null || textInput != null || dropdown != null)
+        var scrollbar = e.target.GetComponent<Scrollbar>();
+
+        if (button != null || toggle != null || textInput != null || dropdown != null || scrollbar != null)
 		{
 			EventSystem.current.SetSelectedGameObject(null);
 			Debug.Log("HandlePointerOut", e.target.gameObject);
 		}
-	}
+    }
 }
