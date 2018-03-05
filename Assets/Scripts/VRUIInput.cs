@@ -7,6 +7,7 @@ public class VRUIInput : MonoBehaviour
 {
 	private SteamVR_LaserPointer laserPointer;
 	private SteamVR_TrackedController trackedController;
+    GameObject currentSphere = null;
 
 	private void OnEnable()
 	{
@@ -17,28 +18,60 @@ public class VRUIInput : MonoBehaviour
 		laserPointer.PointerOut += HandlePointerOut;
 
 		trackedController = GetComponent<SteamVR_TrackedController>();
-		if (trackedController == null)
-		{
-			trackedController = GetComponentInParent<SteamVR_TrackedController>();
-		}
-		trackedController.TriggerClicked -= HandleTriggerClicked;
-		trackedController.TriggerClicked += HandleTriggerClicked;
+
+        if (trackedController == null)
+        {
+            trackedController = GetComponentInParent<SteamVR_TrackedController>();
+        }
+        if (currentSphere == null)
+        {
+            trackedController.TriggerClicked -= HandleTriggerClicked;
+            trackedController.TriggerClicked += HandleTriggerClicked;
+        }
+        else {
+            trackedController.TriggerClicked -= TriggerClickedSphere;
+            trackedController.TriggerClicked += TriggerClickedSphere;
+        }
 	}
 
 
-	private void HandleTriggerClicked(object sender, ClickedEventArgs e)
+
+
+    private void HandleTriggerClicked(object sender, ClickedEventArgs e)
 	{
-		if (EventSystem.current.currentSelectedGameObject != null)
+
+        Debug.Log("In trigger");
+        if (EventSystem.current.currentSelectedGameObject != null)
 		{
             if (EventSystem.current.currentSelectedGameObject.GetComponent("Scrollbar") != null)
             {
-                EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value += .1f;
+                EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
             }
-			ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
+            if (currentSphere != null)
+            {
+
+                //var canv = EventSystem.current.currentSelectedGameObject.GetComponent("SphereCollider").gameObject.name;
+                Debug.Log("Sphere name " + currentSphere.name);
+
+            }
+            ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
 		}
 	}
 
-	private void HandlePointerIn(object sender, PointerEventArgs e)
+
+    private void TriggerClickedSphere(object sender, ClickedEventArgs e)
+    {
+
+        Debug.Log("In trigger sphere");
+        if (currentSphere != null)
+        {
+            //var canv = EventSystem.current.currentSelectedGameObject.GetComponent("SphereCollider").gameObject.name;
+            Debug.Log("Sphere name " + currentSphere.name);
+            currentSphere.GetComponent<Canvas>().enabled = true;
+        }
+    }
+
+    private void HandlePointerIn(object sender, PointerEventArgs e)
 	{
 		var button = e.target.GetComponent<Button>();
 		if (button != null)
@@ -70,6 +103,13 @@ public class VRUIInput : MonoBehaviour
             Debug.Log("HandlePointerIn Scrollbar", e.target.gameObject);
             scrollbar.Select();
         }
+        var sphere = e.target.GetComponent<SphereCollider>();
+        if (sphere != null)
+        {
+            Debug.Log("HandlePointerIn Sphere"+ e.target.gameObject + " "  + sphere.name);
+            currentSphere = sphere.gameObject;
+            OnEnable();
+        }
     }
 
 	private void HandlePointerOut(object sender, PointerEventArgs e)
@@ -80,11 +120,18 @@ public class VRUIInput : MonoBehaviour
 		var textInput = e.target.GetComponent<InputField>();
 		var dropdown = e.target.GetComponent<Dropdown>();
         var scrollbar = e.target.GetComponent<Scrollbar>();
+        var sphere = e.target.GetComponent<SphereCollider>();
 
         if (button != null || toggle != null || textInput != null || dropdown != null || scrollbar != null)
 		{
 			EventSystem.current.SetSelectedGameObject(null);
 			Debug.Log("HandlePointerOut", e.target.gameObject);
 		}
+        if (sphere != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            currentSphere = null;
+            Debug.Log("HandlePointerOut", e.target.gameObject);
+        }
     }
 }

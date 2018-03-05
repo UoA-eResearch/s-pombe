@@ -10,7 +10,7 @@ public class PlayerController_Single : MonoBehaviour
 		{
 			var v = controller.velocity;
 			v.Scale(transform.localScale);
-			transform.position += v * 100;
+			transform.position += v * 10;
 			transform.Rotate(controller.angularVelocity, Space.World);
 		}
 		if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
