@@ -23,15 +23,8 @@ public class VRUIInput : MonoBehaviour
         {
             trackedController = GetComponentInParent<SteamVR_TrackedController>();
         }
-        if (currentSphere == null)
-        {
-            trackedController.TriggerClicked -= HandleTriggerClicked;
-            trackedController.TriggerClicked += HandleTriggerClicked;
-        }
-        else {
-            trackedController.TriggerClicked -= TriggerClickedSphere;
-            trackedController.TriggerClicked += TriggerClickedSphere;
-        }
+        trackedController.TriggerClicked -= HandleTriggerClicked;
+        trackedController.TriggerClicked += HandleTriggerClicked;
 	}
 
 
@@ -47,29 +40,20 @@ public class VRUIInput : MonoBehaviour
             {
                 EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
             }
-            if (currentSphere != null)
-            {
-
-                //var canv = EventSystem.current.currentSelectedGameObject.GetComponent("SphereCollider").gameObject.name;
-                Debug.Log("Sphere name " + currentSphere.name);
-
-            }
+			if (currentSphere != null)
+			{
+				Debug.Log("Sphere name " + currentSphere.name);
+				GameObject info = currentSphere.transform.GetChild (0).gameObject;
+				if (info.activeSelf) {
+					info.SetActive (false);
+				} else {
+					info.SetActive (true);
+				}
+			}
             ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
 		}
 	}
 
-
-    private void TriggerClickedSphere(object sender, ClickedEventArgs e)
-    {
-
-        Debug.Log("In trigger sphere");
-        if (currentSphere != null)
-        {
-            //var canv = EventSystem.current.currentSelectedGameObject.GetComponent("SphereCollider").gameObject.name;
-            Debug.Log("Sphere name " + currentSphere.name);
-            currentSphere.GetComponent<Canvas>().enabled = true;
-        }
-    }
 
     private void HandlePointerIn(object sender, PointerEventArgs e)
 	{

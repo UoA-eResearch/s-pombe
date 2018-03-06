@@ -16,7 +16,8 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject genePrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion[] rotations;
-	private Color32[] colors;
+	public Color32[] colorsWeights;
+	public Color32[] colorsSpheres;
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
@@ -319,74 +320,69 @@ public class LoadDat_Single : MonoBehaviour {
 	void InitColors()
 	{
 		var red = new MaterialPropertyBlock();
-		red.SetColor("_Color", Color.red);
+		red.SetColor("_Color", colorsWeights[0]);
 		var green = new MaterialPropertyBlock();
-		green.SetColor("_Color", Color.green);
+		green.SetColor("_Color", colorsWeights[1]);
 		var blue = new MaterialPropertyBlock();
-		blue.SetColor("_Color", Color.blue);
-
-		colors = new Color32[] { new Color(0.8705882f, 0.3294118f, 0.3294118f, 1), new Color(0.7568628f, 0.3960784f, 0.4509804f, 1), new Color(0.6941177f, 0.4784314f, 0.4509804f, 1), new Color(0.627451f, 0.5176471f, 0.454902f, 1), new Color(0.4745098f, 0.3058824f, 0.07450981f, 1),
-			new Color(1f, 0f, 1f, 1), new Color(0.3882353f, 0.1137255f, 0.1803922f, 1), new Color(0.6941177f, 0.9607843f, 0.9019608f, 1), new Color(0.7568628f, 0.3960784f, 0.4509804f, 1), new Color(0.6392157f, 0.4901961f, 0.8666667f, 1), new Color(0.2470588f, 0.07843138f, 0.4470588f, 1),
-			new Color(0.3411765f, 0.08627451f, 0.8627451f, 1), new Color(0.3176471f, 0.03529412f, 0.3058824f, 1), new Color(0.01176471f, 0.9215686f, 0.6705883f, 1), new Color(0.09803922f, 0.6509804f, 0.5803922f, 1), new Color(0.09019608f, 0.6196079f, 0.854902f, 1), new Color(0.2078431f, 0.2588235f, 0.4862745f, 1),
-			new Color(0.1294118f, 0.2470588f, 0.4078431f, 1), new Color(0.9490196f, 0.9058824f, 0.427451f, 1), new Color(0.9568627f, 0.6901961f, 0.2862745f, 1), new Color(0.5921569f, 0.9647059f, 0.3215686f, 1), new Color(0.172549f, 0.8588235f, 0.3333333f, 1), new Color(0.3019608f, 0.627451f, 0.2117647f, 1), new Color(0.1568628f, 0.2392157f, 0.007843138f, 1)};
+		blue.SetColor("_Color", colorsWeights[2]);
 
 		var peachRed = new MaterialPropertyBlock();
-		peachRed.SetColor("_Color", colors[0]);
+		peachRed.SetColor("_Color", colorsSpheres[0]);
 		var peach = new MaterialPropertyBlock();
-		peach.SetColor("_Color", colors[1]);
+		peach.SetColor("_Color", colorsSpheres[1]);
 		var peachBrown = new MaterialPropertyBlock();
-		peachBrown.SetColor("_Color", colors[2]);
+		peachBrown.SetColor("_Color", colorsSpheres[2]);
 		var dullBrown = new MaterialPropertyBlock();
-		dullBrown.SetColor("_Color", colors[3]);
+		dullBrown.SetColor("_Color", colorsSpheres[3]);
 		var yellowBrown = new MaterialPropertyBlock();
-		yellowBrown.SetColor("_Color", colors[4]);
+		yellowBrown.SetColor("_Color", colorsSpheres[4]);
 
 		var magenta = new MaterialPropertyBlock();
-		magenta.SetColor("_Color", colors[5]);
+		magenta.SetColor("_Color", colorsSpheres[5]);
 		var darkRed = new MaterialPropertyBlock();
-		darkRed.SetColor("_Color", colors[6]);
+		darkRed.SetColor("_Color", colorsSpheres[6]);
 
 		var lightTurquoise = new MaterialPropertyBlock();
-		lightTurquoise.SetColor("_Color", colors[7]);
+		lightTurquoise.SetColor("_Color", colorsSpheres[7]);
 		var turquoise = new MaterialPropertyBlock();
-		turquoise.SetColor("_Color", colors[8]);
+		turquoise.SetColor("_Color", colorsSpheres[8]);
 
 		var lightPurple = new MaterialPropertyBlock();
-		lightPurple.SetColor("_Color", colors[9]);
+		lightPurple.SetColor("_Color", colorsSpheres[9]);
 		var purple = new MaterialPropertyBlock();
-		purple.SetColor("_Color", colors[10]);
+		purple.SetColor("_Color", colorsSpheres[10]);
 		var bluePurple = new MaterialPropertyBlock();
-		bluePurple.SetColor("_Color", colors[11]);
+		bluePurple.SetColor("_Color", colorsSpheres[11]);
 		var redPurple = new MaterialPropertyBlock();
-		redPurple.SetColor("_Color", colors[12]);
+		redPurple.SetColor("_Color", colorsSpheres[12]);
 
 		var brightGreen = new MaterialPropertyBlock();
-		brightGreen.SetColor("_Color", colors[13]);
+		brightGreen.SetColor("_Color", colorsSpheres[13]);
 		var dullGreen = new MaterialPropertyBlock();
-		dullGreen.SetColor("_Color", colors[14]);
+		dullGreen.SetColor("_Color", colorsSpheres[14]);
 
 
 		var brightBlue = new MaterialPropertyBlock();
-		brightBlue.SetColor("_Color", colors[15]);
+		brightBlue.SetColor("_Color", colorsSpheres[15]);
 		var dullBlue = new MaterialPropertyBlock();
-		dullBlue.SetColor("_Color", colors[16]);
+		dullBlue.SetColor("_Color", colorsSpheres[16]);
 		var darkBlue = new MaterialPropertyBlock();
-		darkBlue.SetColor("_Color", colors[17]);
+		darkBlue.SetColor("_Color", colorsSpheres[17]);
 
 		var lightYellow = new MaterialPropertyBlock();
-		lightYellow.SetColor("_Color", colors[18]);
+		lightYellow.SetColor("_Color", colorsSpheres[18]);
 		var orange = new MaterialPropertyBlock();
-		orange.SetColor("_Color", colors[19]);
+		orange.SetColor("_Color", colorsSpheres[19]);
 
 
 		var lightGreen = new MaterialPropertyBlock();
-		lightGreen.SetColor("_Color", colors[20]);
+		lightGreen.SetColor("_Color", colorsSpheres[20]);
 		var neonGreen = new MaterialPropertyBlock();
-		neonGreen.SetColor("_Color", colors[21]);
+		neonGreen.SetColor("_Color", colorsSpheres[21]);
 		var grassGreen = new MaterialPropertyBlock();
-		grassGreen.SetColor("_Color", colors[22]);
+		grassGreen.SetColor("_Color", colorsSpheres[22]);
 		var darkGreen = new MaterialPropertyBlock();
-		darkGreen.SetColor("_Color", colors[23]);
+		darkGreen.SetColor("_Color", colorsSpheres[23]);
 
 		materials = new MaterialPropertyBlock[] { red, green, blue, peachRed, peach, peachBrown, dullBrown, yellowBrown, magenta, darkRed, lightTurquoise, turquoise, lightPurple, purple, bluePurple, redPurple, brightGreen,
 			dullGreen, brightBlue, dullBlue, darkBlue, lightYellow, orange, lightGreen, neonGreen, grassGreen, darkGreen };
@@ -415,7 +411,7 @@ public class LoadDat_Single : MonoBehaviour {
 		{
 			var toggle = Instantiate(togglePrefab, menu.transform);
 			toggle.GetComponentInChildren<Text>().text = w.name;
-			toggle.GetComponentInChildren<Text>().color = colors[count];
+			toggle.GetComponentInChildren<Text>().color = colorsSpheres[count];
 			//toggle.GetComponentInChildren<CanvasRenderer>().SetColor(colors[count]);
 			toggle.name = w.name;
 			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
