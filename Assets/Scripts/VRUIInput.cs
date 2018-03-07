@@ -34,22 +34,28 @@ public class VRUIInput : MonoBehaviour
 	{
 
         Debug.Log("In trigger");
+        if (currentSphere != null)
+        {
+            Debug.Log("Sphere name " + currentSphere.name);
+            GameObject info = currentSphere.transform.GetChild(0).gameObject;
+            if (info.activeInHierarchy)
+            {
+                info.SetActive(false);
+            }
+            else
+            {
+                info.SetActive(true);
+                //info.transform.localPosition = currentSphere.transform.localPosition;
+
+            }
+        }
+
         if (EventSystem.current.currentSelectedGameObject != null)
 		{
             if (EventSystem.current.currentSelectedGameObject.GetComponent("Scrollbar") != null)
             {
                 EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
             }
-			if (currentSphere != null)
-			{
-				Debug.Log("Sphere name " + currentSphere.name);
-				GameObject info = currentSphere.transform.GetChild (0).gameObject;
-				if (info.activeSelf) {
-					info.SetActive (false);
-				} else {
-					info.SetActive (true);
-				}
-			}
             ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
 		}
 	}
