@@ -45,7 +45,6 @@ public class VRUIInput : MonoBehaviour
             else
             {
                 info.SetActive(true);
-                //info.transform.localPosition = currentSphere.transform.localPosition;
 
             }
         }

@@ -14,6 +14,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject spherePrefab;
 	public GameObject markerPrefab;
 	public GameObject genePrefab;
+    public GameObject infoPrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion[] rotations;
 	public Color32[] colorsWeights;
@@ -53,11 +54,26 @@ public class LoadDat_Single : MonoBehaviour {
 			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
-			spheres.Add(sphere);
+            var info = Instantiate(infoPrefab, transform);
+            info.transform.SetParent(sphere.transform);
+            info.transform.localPosition = new Vector3(0, 1, 0);
+            info.SetActive(false);
+
+            for (var gene = 1; gene < genesChrom1.Count; gene++)
+            {
+                List<string> geneContent = genesChrom1.ElementAt(gene).Value;
+                var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (Int32.Parse(tagElements[1]) == index || Int32.Parse(tagElements[1]) == index) {
+                    foreach(var entry in geneContent)
+                    {
+                        info.GetComponentInChildren<Text>().text += entry;
+                    }
+                }
+            }
+            spheres.Add(sphere);
 		}
 		Debug.Log ("Count of spheres: " + spheres.Count);
-
-
 	}
 
 	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
@@ -420,7 +436,6 @@ public class LoadDat_Single : MonoBehaviour {
 			markers.Add(w.name, new List<GameObject>());
 			count += 1;
 		}
-		LoadFromDat();
 
 		genesChrom1.Add ("Chromosome 1", null);
 		genesChrom2.Add ("Chromosome 2", null);
@@ -436,10 +451,12 @@ public class LoadDat_Single : MonoBehaviour {
 
 		LoadDropdownGeneTags ();
 
-		//LoadGenesByClickSphere (genesChrom1, 10);
-		//LoadGenesByClickSphere (genesChrom2, 10);
-		//LoadGenesByClickSphere (genesChrom3, 10);
-	}
+        LoadFromDat();
+
+        //LoadGenesByClickSphere (genesChrom1, 10);
+        //LoadGenesByClickSphere (genesChrom2, 10);
+        //LoadGenesByClickSphere (genesChrom3, 10);
+    }
 
 	private void InstantiateDropdownList(Dictionary<string, List<string>> genes){
 		allGeneTags.Add ("No Tag Selected");
