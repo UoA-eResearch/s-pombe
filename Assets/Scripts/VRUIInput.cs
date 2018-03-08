@@ -44,8 +44,8 @@ public class VRUIInput : MonoBehaviour
             }
             else
             {
+				string geneText = currentSphere.GetComponent<LoadDat_Single> ().LoadGeneText ();
                 info.SetActive(true);
-
             }
         }
 

@@ -50,7 +50,7 @@ public class LoadDat_Single : MonoBehaviour {
 			var y = float.Parse(bits[2]);
 			var z = float.Parse(bits[3]);
 			var sphere = Instantiate(spherePrefab, transform);
-			sphere.name = i.ToString() + "Chrom: " + c;
+			sphere.name = i.ToString() + " Chrom: " + c;
 			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
@@ -59,21 +59,29 @@ public class LoadDat_Single : MonoBehaviour {
             info.transform.localPosition = new Vector3(0, 1, 0);
             info.SetActive(false);
 
-            for (var gene = 1; gene < genesChrom1.Count; gene++)
-            {
-                List<string> geneContent = genesChrom1.ElementAt(gene).Value;
-                var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (Int32.Parse(tagElements[1]) == index || Int32.Parse(tagElements[1]) == index) {
-                    foreach(var entry in geneContent)
-                    {
-                        info.GetComponentInChildren<Text>().text += entry;
-                    }
-                }
-            }
             spheres.Add(sphere);
 		}
+
 		Debug.Log ("Count of spheres: " + spheres.Count);
+	}
+
+	public string LoadGeneText(){
+		string geneText = "";
+		var sphereNumber = Int32.Parse(gameObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
+
+		for (var gene = 1; gene < genesChrom1.Count; gene++)
+		{
+			List<string> geneContent = genesChrom1.ElementAt(gene).Value;
+			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
+				foreach(var entry in geneContent)
+				{
+					geneText = geneText + Environment.NewLine + entry;
+				}
+			}
+		}
+		return geneText;
 	}
 
 	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
