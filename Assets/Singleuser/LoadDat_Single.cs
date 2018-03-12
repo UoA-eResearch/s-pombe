@@ -65,23 +65,35 @@ public class LoadDat_Single : MonoBehaviour {
 		Debug.Log ("Count of spheres: " + spheres.Count);
 	}
 
-	public string LoadGeneText(){
-		string geneText = "";
-		var sphereNumber = Int32.Parse(gameObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
+	public string LoadGeneText(string sphName){
 
-		for (var gene = 1; gene < genesChrom1.Count; gene++)
+        var sphereObject = GameObject.Find(sphName);
+
+		
+		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
+        Debug.Log("Sphere number: " + sphereNumber);
+        string newString = "";
+
+        for (var gene = 1; gene < genesChrom1.Count; gene++)
 		{
-			List<string> geneContent = genesChrom1.ElementAt(gene).Value;
+            
+            List<string> geneContent = genesChrom1.ElementAt(gene).Value;
 			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] geneText = new string[geneContent.Count];
 
-			if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
-				foreach(var entry in geneContent)
+            if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
+                Debug.Log(Int32.Parse(tagElements[0]) + " or " + Int32.Parse(tagElements[1]) + " is same as " + sphereNumber + " number of entries " + geneContent.Count);
+
+                for (var entry = 0; entry < geneContent.Count; entry++)
 				{
-					geneText = geneText + Environment.NewLine + entry;
+                    Debug.Log("In foreach" + geneContent.ElementAt(entry));
+					geneText[entry] = geneContent.ElementAt(entry);
 				}
-			}
-		}
-		return geneText;
+                newString = string.Join(" ", geneText);
+            }
+        }
+        Debug.Log(newString);
+        return newString;
 	}
 
 	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){

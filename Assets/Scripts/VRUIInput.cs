@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 [RequireComponent(typeof(SteamVR_LaserPointer))]
 public class VRUIInput : MonoBehaviour
@@ -8,6 +9,7 @@ public class VRUIInput : MonoBehaviour
 	private SteamVR_LaserPointer laserPointer;
 	private SteamVR_TrackedController trackedController;
     GameObject currentSphere = null;
+    GameObject tempSphere = null;
 
 	private void OnEnable()
 	{
@@ -25,7 +27,32 @@ public class VRUIInput : MonoBehaviour
         }
         trackedController.TriggerClicked -= HandleTriggerClicked;
         trackedController.TriggerClicked += HandleTriggerClicked;
-	}
+        
+        trackedController.PadClicked -= HandlePadClicked;
+        trackedController.PadClicked += HandlePadClicked;
+        
+    }
+
+
+    private void HandlePadClicked(object sender, ClickedEventArgs e)
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject.GetComponent("Scrollbar") != null)
+            {
+                if (e.padY < 0)
+                {
+                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
+                }
+                else
+                {
+                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value += .1f;
+                }
+
+            }
+            ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
+        }
+    }
 
 
 
@@ -41,20 +68,25 @@ public class VRUIInput : MonoBehaviour
             if (info.activeInHierarchy)
             {
                 info.SetActive(false);
+                
             }
             else
             {
-				string geneText = currentSphere.GetComponent<LoadDat_Single> ().LoadGeneText ();
                 info.SetActive(true);
+                tempSphere = currentSphere;
+                
+                string geneText = tempSphere.GetComponentInParent<LoadDat_Single>().LoadGeneText(tempSphere.name);
+
+                //string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                info.GetComponentInChildren<Text>().text = geneText;
+                //tempSphere = null;
+                
             }
         }
 
         if (EventSystem.current.currentSelectedGameObject != null)
 		{
-            if (EventSystem.current.currentSelectedGameObject.GetComponent("Scrollbar") != null)
-            {
-                EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
-            }
             ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, new PointerEventData(EventSystem.current), ExecuteEvents.submitHandler);
 		}
 	}
