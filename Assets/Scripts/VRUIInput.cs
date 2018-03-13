@@ -77,11 +77,17 @@ public class VRUIInput : MonoBehaviour
                 
                 string geneText = tempSphere.GetComponentInParent<LoadDat_Single>().LoadGeneText(tempSphere.name);
 
-                string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                //string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 info.GetComponentInChildren<Text>().text = geneText;
+                var scrollbars = info.GetComponentsInChildren<Scrollbar>();
+
+                foreach (var bar in scrollbars) {
+                    bar.value = 1.0f;
+                }
+
                 //tempSphere = null;
-                
+
             }
         }
 
