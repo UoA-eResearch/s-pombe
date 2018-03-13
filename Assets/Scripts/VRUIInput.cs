@@ -42,11 +42,11 @@ public class VRUIInput : MonoBehaviour
             {
                 if (e.padY < 0)
                 {
-                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .1f;
+                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value -= .3f;
                 }
                 else
                 {
-                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value += .1f;
+                    EventSystem.current.currentSelectedGameObject.GetComponent<Scrollbar>().value += .3f;
                 }
 
             }
@@ -77,7 +77,7 @@ public class VRUIInput : MonoBehaviour
                 
                 string geneText = tempSphere.GetComponentInParent<LoadDat_Single>().LoadGeneText(tempSphere.name);
 
-                //string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 info.GetComponentInChildren<Text>().text = geneText;
                 //tempSphere = null;

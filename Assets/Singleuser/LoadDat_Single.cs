@@ -72,27 +72,27 @@ public class LoadDat_Single : MonoBehaviour {
 		
 		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
         Debug.Log("Sphere number: " + sphereNumber);
-        string newString = "";
+        string newString = null;
 
         for (var gene = 1; gene < genesChrom1.Count; gene++)
 		{
             
             List<string> geneContent = genesChrom1.ElementAt(gene).Value;
 			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            string[] geneText = new string[geneContent.Count];
+            var geneText = new string[geneContent.Count];
 
             if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
-                Debug.Log(Int32.Parse(tagElements[0]) + " or " + Int32.Parse(tagElements[1]) + " is same as " + sphereNumber + " number of entries " + geneContent.Count);
+                //Debug.Log(Int32.Parse(tagElements[0]) + " or " + Int32.Parse(tagElements[1]) + " is same as " + sphereNumber + " number of entries " + geneContent.Count);
 
                 for (var entry = 0; entry < geneContent.Count; entry++)
 				{
-                    Debug.Log("In foreach" + geneContent.ElementAt(entry));
+                    //Debug.Log("In foreach" + geneContent.ElementAt(entry));
 					geneText[entry] = geneContent.ElementAt(entry);
 				}
                 newString = string.Join(" ", geneText);
             }
         }
-        Debug.Log(newString);
+        //Debug.Log(geneTextArray.Length);
         return newString;
 	}
 

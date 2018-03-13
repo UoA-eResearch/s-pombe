@@ -13,6 +13,7 @@ public class PlayerController_Single : MonoBehaviour
 			transform.position += v * 10;
 			transform.Rotate(controller.angularVelocity, Space.World);
 		}
+        /*
 		if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
 		{
 			var s = controller.GetAxis().y;
@@ -22,7 +23,7 @@ public class PlayerController_Single : MonoBehaviour
 				scale = .95f;
 			}
 			transform.localScale *= scale;
-		}
+		}*/
 		if (controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
 		{
 			controller.TriggerHapticPulse(1000);
