@@ -115,8 +115,8 @@ public class VRUIInput : MonoBehaviour
 		var textInput = e.target.GetComponent<InputField>();
 		if (textInput != null)
 		{
-			textInput.Select ();
-			Debug.Log("HandlePointerIn text input", e.target.gameObject);
+            textInput.Select();
+            Debug.Log("HandlePointerIn text input", e.target.gameObject);
 		}
 		var dropdown = e.target.GetComponent<Dropdown>();
 		if (dropdown != null)
