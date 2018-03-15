@@ -56,15 +56,6 @@ public class LoadDat_Single : MonoBehaviour {
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
 
-			//var propBlock = new MaterialPropertyBlock();
-			//var r = colorsSpheresOff[c].r;
-			//var g = colorsSpheresOff[c].g;
-			//var b = colorsSpheresOff[c].b;
-
-			//propBlock.SetColor("_Color", new Color32(r, g, b, 10));
-			//materials [c] = propBlock;
-			//sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [c]);
-
             var info = Instantiate(infoPrefab, transform);
             info.transform.SetParent(sphere.transform);
             info.transform.localPosition = new Vector3(0, 1, 0);
@@ -93,17 +84,14 @@ public class LoadDat_Single : MonoBehaviour {
             var geneText = new string[geneContent.Count];
 
             if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
-                //Debug.Log(Int32.Parse(tagElements[0]) + " or " + Int32.Parse(tagElements[1]) + " is same as " + sphereNumber + " number of entries " + geneContent.Count);
 
                 for (var entry = 0; entry < geneContent.Count; entry++)
 				{
-                    //Debug.Log("In foreach" + geneContent.ElementAt(entry));
 					geneText[entry] = geneContent.ElementAt(entry);
 				}
                 newString = string.Join(" ", geneText);
             }
         }
-        //Debug.Log(geneTextArray.Length);
         return newString;
 	}
 
@@ -183,11 +171,11 @@ public class LoadDat_Single : MonoBehaviour {
 
 				Debug.Log (fromNum + " " + genes.First().Key);
 
-				if (genes.First ().Key == "Chromosome 1") {}
-				else if(genes.First ().Key == "Chromosome 2") {
+				if (genes.First ().Key.Contains("Chromosome 1")) {}
+				else if(genes.First ().Key.Contains("Chromosome 2")) {
 					fromNum = numberOfChromosomes[0] + fromNum;
 					toNum = numberOfChromosomes[0] + toNum;
-				}else if(genes.First ().Key == "Chromosome 3") {
+				}else if(genes.First ().Key.Contains("Chromosome 3")) {
 					fromNum = numberOfChromosomes[0] + numberOfChromosomes[1] + fromNum;
 					toNum = numberOfChromosomes[0] + numberOfChromosomes[1] + toNum;
 				}
@@ -195,28 +183,72 @@ public class LoadDat_Single : MonoBehaviour {
 				Debug.Log (fromNum + " " + genes.First().Key);
 				var location = spheres [fromNum + 1].transform.position;
 
-
-				if (fromNum > 0) {
+				var startPos = fromNum - 1;
+				var endPos = toNum + 1;
+				if (startPos < 0) {
+					startPos = 0;
+				}
+				if (endPos > spheres.Count) {
+					endPos = spheres.Count;
+				}
 					//location = Vector3.Lerp (spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, 0.5f);
 					//location = CalculateCubicBezierPoint (i, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position, spheres [fromNum - 1].transform.position, spheres [fromNum + 1].transform.position);
 					Vector3 posSphereFirst = spheres [fromNum].transform.position;
-					Vector3 posBeforeFirst = spheres [fromNum - 1].transform.position;
+					Vector3 posBeforeFirst = spheres [startPos].transform.position;
 					Vector3 posAfterFirst = spheres [fromNum + 1].transform.position;
 
 					Vector3 startPoint = CalculateCubicBezierPoint (0.5f, posBeforeFirst, posSphereFirst, posBeforeFirst, posSphereFirst);
 
 					Vector3 posSphereLast = spheres [toNum].transform.position;
 					Vector3 posBeforeLast = spheres [toNum - 1].transform.position;
-					Vector3 posAfterLast = spheres [toNum + 1].transform.position;
+					Vector3 posAfterLast = spheres [endPos].transform.position;
 
 					Vector3 endPoint = CalculateCubicBezierPoint (0.5f, posSphereLast, posAfterLast, posSphereLast, posAfterLast);
 
 					var direction = posAfterLast;
 					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
 					InstantiateGene (startPoint, endPoint, fromNum, direction, geneName);
-				}
+
+					toggleSpheresOff ();
+				
 			}
 		}
+	}
+
+	void toggleSpheresOff(){
+
+		foreach (var sphere in spheres) {
+
+			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
+
+			var propBlock = new MaterialPropertyBlock();
+			var r = colorsSpheresOff[numChrom].r;
+			var g = colorsSpheresOff[numChrom].g;
+			var b = colorsSpheresOff[numChrom].b;
+
+			propBlock.SetColor("_Color", new Color32(r, g, b, 10));
+			materials [numChrom] = propBlock;
+			sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+		}
+
+	}
+
+	void toggleSpheresOn(){
+
+		foreach (var sphere in spheres) {
+
+			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
+
+			var propBlock = new MaterialPropertyBlock();
+			var r = colorsSpheresOn[numChrom].r;
+			var g = colorsSpheresOn[numChrom].g;
+			var b = colorsSpheresOn[numChrom].b;
+
+			propBlock.SetColor("_Color", new Color32(r, g, b, 255));
+			materials [numChrom] = propBlock;
+			sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+		}
+
 	}
 
 	void LoadGenesByClickSphere(Dictionary<string, List<string>> genes, int sphereNum){
@@ -517,6 +549,7 @@ public class LoadDat_Single : MonoBehaviour {
 
 		foreach (var gene in genes) {
 			Destroy (gene);
+			toggleSpheresOn ();
 		}
 
 		LoadGenesByString (genesChrom1);
