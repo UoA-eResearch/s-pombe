@@ -17,8 +17,9 @@ public class LoadDat_Single : MonoBehaviour {
     public GameObject infoPrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion[] rotations;
+	public Color32[] colorsSpheresOff;
 	public Color32[] colorsWeights;
-	public Color32[] colorsSpheres;
+	public Color32[] colorsSpheresOn;
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
@@ -54,6 +55,16 @@ public class LoadDat_Single : MonoBehaviour {
 			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
 			sphere.transform.localPosition = new Vector3(x, y, z);
 			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
+
+			//var propBlock = new MaterialPropertyBlock();
+			//var r = colorsSpheresOff[c].r;
+			//var g = colorsSpheresOff[c].g;
+			//var b = colorsSpheresOff[c].b;
+
+			//propBlock.SetColor("_Color", new Color32(r, g, b, 10));
+			//materials [c] = propBlock;
+			//sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [c]);
+
             var info = Instantiate(infoPrefab, transform);
             info.transform.SetParent(sphere.transform);
             info.transform.localPosition = new Vector3(0, 1, 0);
@@ -356,69 +367,69 @@ public class LoadDat_Single : MonoBehaviour {
 	void InitColors()
 	{
 		var red = new MaterialPropertyBlock();
-		red.SetColor("_Color", colorsWeights[0]);
+		red.SetColor("_Color", colorsSpheresOn[0]);
 		var green = new MaterialPropertyBlock();
-		green.SetColor("_Color", colorsWeights[1]);
+		green.SetColor("_Color", colorsSpheresOn[1]);
 		var blue = new MaterialPropertyBlock();
-		blue.SetColor("_Color", colorsWeights[2]);
+		blue.SetColor("_Color", colorsSpheresOn[2]);
 
 		var peachRed = new MaterialPropertyBlock();
-		peachRed.SetColor("_Color", colorsSpheres[0]);
+		peachRed.SetColor("_Color", colorsWeights[0]);
 		var peach = new MaterialPropertyBlock();
-		peach.SetColor("_Color", colorsSpheres[1]);
+		peach.SetColor("_Color", colorsWeights[1]);
 		var peachBrown = new MaterialPropertyBlock();
-		peachBrown.SetColor("_Color", colorsSpheres[2]);
+		peachBrown.SetColor("_Color", colorsWeights[2]);
 		var dullBrown = new MaterialPropertyBlock();
-		dullBrown.SetColor("_Color", colorsSpheres[3]);
+		dullBrown.SetColor("_Color", colorsWeights[3]);
 		var yellowBrown = new MaterialPropertyBlock();
-		yellowBrown.SetColor("_Color", colorsSpheres[4]);
+		yellowBrown.SetColor("_Color", colorsWeights[4]);
 
 		var magenta = new MaterialPropertyBlock();
-		magenta.SetColor("_Color", colorsSpheres[5]);
+		magenta.SetColor("_Color", colorsWeights[5]);
 		var darkRed = new MaterialPropertyBlock();
-		darkRed.SetColor("_Color", colorsSpheres[6]);
+		darkRed.SetColor("_Color", colorsWeights[6]);
 
 		var lightTurquoise = new MaterialPropertyBlock();
-		lightTurquoise.SetColor("_Color", colorsSpheres[7]);
+		lightTurquoise.SetColor("_Color", colorsWeights[7]);
 		var turquoise = new MaterialPropertyBlock();
-		turquoise.SetColor("_Color", colorsSpheres[8]);
+		turquoise.SetColor("_Color", colorsWeights[8]);
 
 		var lightPurple = new MaterialPropertyBlock();
-		lightPurple.SetColor("_Color", colorsSpheres[9]);
+		lightPurple.SetColor("_Color", colorsWeights[9]);
 		var purple = new MaterialPropertyBlock();
-		purple.SetColor("_Color", colorsSpheres[10]);
+		purple.SetColor("_Color", colorsWeights[10]);
 		var bluePurple = new MaterialPropertyBlock();
-		bluePurple.SetColor("_Color", colorsSpheres[11]);
+		bluePurple.SetColor("_Color", colorsWeights[11]);
 		var redPurple = new MaterialPropertyBlock();
-		redPurple.SetColor("_Color", colorsSpheres[12]);
+		redPurple.SetColor("_Color", colorsWeights[12]);
 
 		var brightGreen = new MaterialPropertyBlock();
-		brightGreen.SetColor("_Color", colorsSpheres[13]);
+		brightGreen.SetColor("_Color", colorsWeights[13]);
 		var dullGreen = new MaterialPropertyBlock();
-		dullGreen.SetColor("_Color", colorsSpheres[14]);
+		dullGreen.SetColor("_Color", colorsWeights[14]);
 
 
 		var brightBlue = new MaterialPropertyBlock();
-		brightBlue.SetColor("_Color", colorsSpheres[15]);
+		brightBlue.SetColor("_Color", colorsWeights[15]);
 		var dullBlue = new MaterialPropertyBlock();
-		dullBlue.SetColor("_Color", colorsSpheres[16]);
+		dullBlue.SetColor("_Color", colorsWeights[16]);
 		var darkBlue = new MaterialPropertyBlock();
-		darkBlue.SetColor("_Color", colorsSpheres[17]);
+		darkBlue.SetColor("_Color", colorsWeights[17]);
 
 		var lightYellow = new MaterialPropertyBlock();
-		lightYellow.SetColor("_Color", colorsSpheres[18]);
+		lightYellow.SetColor("_Color", colorsWeights[18]);
 		var orange = new MaterialPropertyBlock();
-		orange.SetColor("_Color", colorsSpheres[19]);
+		orange.SetColor("_Color", colorsWeights[19]);
 
 
 		var lightGreen = new MaterialPropertyBlock();
-		lightGreen.SetColor("_Color", colorsSpheres[20]);
+		lightGreen.SetColor("_Color", colorsWeights[20]);
 		var neonGreen = new MaterialPropertyBlock();
-		neonGreen.SetColor("_Color", colorsSpheres[21]);
+		neonGreen.SetColor("_Color", colorsWeights[21]);
 		var grassGreen = new MaterialPropertyBlock();
-		grassGreen.SetColor("_Color", colorsSpheres[22]);
+		grassGreen.SetColor("_Color", colorsWeights[22]);
 		var darkGreen = new MaterialPropertyBlock();
-		darkGreen.SetColor("_Color", colorsSpheres[23]);
+		darkGreen.SetColor("_Color", colorsWeights[23]);
 
 		materials = new MaterialPropertyBlock[] { red, green, blue, peachRed, peach, peachBrown, dullBrown, yellowBrown, magenta, darkRed, lightTurquoise, turquoise, lightPurple, purple, bluePurple, redPurple, brightGreen,
 			dullGreen, brightBlue, dullBlue, darkBlue, lightYellow, orange, lightGreen, neonGreen, grassGreen, darkGreen };
@@ -447,7 +458,7 @@ public class LoadDat_Single : MonoBehaviour {
 		{
 			var toggle = Instantiate(togglePrefab, menu.transform);
 			toggle.GetComponentInChildren<Text>().text = w.name;
-			toggle.GetComponentInChildren<Text>().color = colorsSpheres[count];
+			toggle.GetComponentInChildren<Text>().color = colorsWeights[count];
 			//toggle.GetComponentInChildren<CanvasRenderer>().SetColor(colors[count]);
 			toggle.name = w.name;
 			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
