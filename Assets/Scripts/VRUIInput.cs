@@ -63,12 +63,12 @@ public class VRUIInput : MonoBehaviour
         Debug.Log("In trigger");
         if (currentSphere != null)
         {
-            Debug.Log("Sphere name " + currentSphere.name);
+            //Debug.Log("Sphere name " + currentSphere.name);
             GameObject info = currentSphere.transform.GetChild(0).gameObject;
             if (info.activeInHierarchy)
             {
                 info.SetActive(false);
-                
+                currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes();
             }
             else
             {

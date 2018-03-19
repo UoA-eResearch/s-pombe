@@ -73,7 +73,7 @@ public class LoadDat_Single : MonoBehaviour {
 
 		
 		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
-        Debug.Log("Sphere number: " + sphereNumber);
+        //Debug.Log("Sphere number: " + sphereNumber);
         string newString = null;
 
         for (var gene = 1; gene < genesChrom1.Count; gene++)
@@ -92,6 +92,10 @@ public class LoadDat_Single : MonoBehaviour {
                 newString = string.Join(" ", geneText);
             }
         }
+        LoadGenesByClickSphere(genesChrom1, sphereNumber);
+        LoadGenesByClickSphere(genesChrom2, sphereNumber);
+        LoadGenesByClickSphere(genesChrom3, sphereNumber);
+
         return newString;
 	}
 
@@ -221,14 +225,14 @@ public class LoadDat_Single : MonoBehaviour {
 
 			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
 
-			var propBlock = new MaterialPropertyBlock();
+			//var propBlock = new MaterialPropertyBlock();
 			var r = colorsSpheresOff[numChrom].r;
 			var g = colorsSpheresOff[numChrom].g;
 			var b = colorsSpheresOff[numChrom].b;
 
-			propBlock.SetColor("_Color", new Color32(r, g, b, 10));
-			materials [numChrom] = propBlock;
-			sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+			//propBlock.SetColor("_Color", new Color32(r, g, b, 10));
+			materials [numChrom].SetColor("_Color", new Color32(r, g, b, 10));
+            sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
 		}
 
 	}
@@ -239,14 +243,14 @@ public class LoadDat_Single : MonoBehaviour {
 
 			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
 
-			var propBlock = new MaterialPropertyBlock();
+			//var propBlock = new MaterialPropertyBlock();
 			var r = colorsSpheresOn[numChrom].r;
 			var g = colorsSpheresOn[numChrom].g;
 			var b = colorsSpheresOn[numChrom].b;
 
-			propBlock.SetColor("_Color", new Color32(r, g, b, 255));
-			materials [numChrom] = propBlock;
-			sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+			//propBlock.SetColor("_Color", new Color32(r, g, b, 255));
+			materials [numChrom].SetColor("_Color", new Color32(r, g, b, 255));
+            sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
 		}
 
 	}
@@ -543,14 +547,18 @@ public class LoadDat_Single : MonoBehaviour {
 			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
 		}
 	}
+    public void RemoveAllGenes() {
+        foreach (var gene in genes)
+        {
+            Destroy(gene);
+            toggleSpheresOn();
+        }
+    }
 
 	public void DropdownInputChanged(int inputChoice){
 		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
 
-		foreach (var gene in genes) {
-			Destroy (gene);
-			toggleSpheresOn ();
-		}
+        RemoveAllGenes();
 
 		LoadGenesByString (genesChrom1);
 		LoadGenesByString (genesChrom2);

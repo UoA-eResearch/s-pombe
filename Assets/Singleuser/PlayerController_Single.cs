@@ -6,13 +6,21 @@ public class PlayerController_Single : MonoBehaviour
 	void ViveControl(int controllerId)
 	{
 		var controller = SteamVR_Controller.Input(controllerId);
+        /*
 		if (controller.GetPress(SteamVR_Controller.ButtonMask.Trigger))
 		{
 			var v = controller.velocity;
 			v.Scale(transform.localScale);
 			transform.position += v * 100;
 			transform.Rotate(controller.angularVelocity, Space.World);
-		}
+		}*/
+        if (controller.GetPress(SteamVR_Controller.ButtonMask.Grip))
+        {
+            var v = controller.velocity;
+            v.Scale(transform.localScale);
+            transform.position += v * 100;
+            transform.Rotate(controller.angularVelocity, Space.World);
+        }
         /*
 		if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
 		{
@@ -24,7 +32,7 @@ public class PlayerController_Single : MonoBehaviour
 			}
 			transform.localScale *= scale;
 		}*/
-		if (controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+        if (controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
 		{
 			controller.TriggerHapticPulse(1000);
 			if (menu.activeSelf)
