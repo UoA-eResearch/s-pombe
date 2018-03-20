@@ -355,6 +355,20 @@ public class LoadDat_Single : MonoBehaviour {
 				LoadWeight(t.name);
 			}
 		}
+
+		List<int> numbers = new List<int> ();
+
+		foreach (var gene in genes) {
+			numbers.Add(Int32.Parse(gene.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries) [1]));
+		}
+		RemoveAllGenes (false);
+		genes = new List<GameObject> ();
+
+		foreach (var num in numbers) {
+			LoadGenesByClickSphere(genesChrom1, num);
+			LoadGenesByClickSphere(genesChrom2, num);
+			LoadGenesByClickSphere(genesChrom3, num);
+		}
 	}
 
 	public void LoadWeight(string name)
@@ -547,18 +561,20 @@ public class LoadDat_Single : MonoBehaviour {
 			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
 		}
 	}
-    public void RemoveAllGenes() {
+	public void RemoveAllGenes(bool spheresOn) {
         foreach (var gene in genes)
         {
             Destroy(gene);
-            toggleSpheresOn();
         }
+		if (spheresOn) {
+			toggleSpheresOn ();
+		}
     }
 
 	public void DropdownInputChanged(int inputChoice){
 		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
 
-        RemoveAllGenes();
+        RemoveAllGenes(true);
 
 		LoadGenesByString (genesChrom1);
 		LoadGenesByString (genesChrom2);
