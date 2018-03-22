@@ -23,7 +23,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
-	private List<GameObject> genes = new List<GameObject>();
+	public List<GameObject> genes = new List<GameObject>();
 	private List<string> allGeneTags = new List<string>();
 	private List<string> changingDropdownGeneTags = new List<string>();
 	public Dictionary<string, List<string>> genesChrom1 = new Dictionary<string, List<string>>();
@@ -296,7 +296,9 @@ public class LoadDat_Single : MonoBehaviour {
 					var direction = posAfterLast;
 					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
 					InstantiateGene (startPoint, endPoint, fromNum, direction, geneName);
-				}
+
+                    toggleSpheresOff();
+                }
 			}
 		}
 	}

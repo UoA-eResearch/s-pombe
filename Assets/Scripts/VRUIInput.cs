@@ -68,7 +68,15 @@ public class VRUIInput : MonoBehaviour
             if (info.activeInHierarchy)
             {
                 info.SetActive(false);
-                currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes(true);
+                var count = currentSphere.GetComponent<LoadDat_Single>().genes.Count;
+                if (count > 0)
+                {
+                    currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes(false);
+                }
+                else {
+                    currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes(true);
+                }
+                
             }
             else
             {
