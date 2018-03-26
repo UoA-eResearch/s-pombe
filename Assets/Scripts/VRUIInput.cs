@@ -145,6 +145,13 @@ public class VRUIInput : MonoBehaviour
             currentSphere = sphere.gameObject;
             OnEnable();
         }
+		var particleSys = e.target.GetComponent<ParticleSystem>();
+		if (particleSys != null)
+		{
+			Debug.Log("HandlePointerIn Particle System"+ e.target.gameObject + " "  + particleSys.name);
+			currentSphere = particleSys.gameObject;
+			OnEnable();
+		}
     }
 
 	private void HandlePointerOut(object sender, PointerEventArgs e)
@@ -156,13 +163,14 @@ public class VRUIInput : MonoBehaviour
 		var dropdown = e.target.GetComponent<Dropdown>();
         var scrollbar = e.target.GetComponent<Scrollbar>();
         var sphere = e.target.GetComponent<SphereCollider>();
+		var particleSys = e.target.GetComponent<ParticleSystem>();
 
         if (button != null || toggle != null || textInput != null || dropdown != null || scrollbar != null)
 		{
 			EventSystem.current.SetSelectedGameObject(null);
 			Debug.Log("HandlePointerOut", e.target.gameObject);
 		}
-        if (sphere != null)
+		if (sphere != null || particleSys != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
             currentSphere = null;
