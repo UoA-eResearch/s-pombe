@@ -17,9 +17,9 @@ public class LoadDat_Single : MonoBehaviour {
     public GameObject infoPrefab;
 	private MaterialPropertyBlock[] materials;
 	private Quaternion[] rotations;
-	public Color32[] colorsSpheresOff;
+	public Color[] colorsSpheresOff;
 	public Color32[] colorsWeights;
-	public Color32[] colorsSpheresOn;
+	public Color[] colorsSpheresOn;
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
@@ -54,7 +54,11 @@ public class LoadDat_Single : MonoBehaviour {
 			sphere.name = i.ToString() + " Chrom: " + c;
 			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
 			sphere.transform.localPosition = new Vector3(x, y, z);
-			sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
+            //sphere.GetComponent<Renderer>().SetPropertyBlock(materials[c]);
+            var ps = sphere.GetComponent<ParticleSystem>();
+            var psColorModule = ps.colorOverLifetime;
+            psColorModule.color = colorsSpheresOn[c];
+
 
             var info = Instantiate(infoPrefab, transform);
             info.transform.SetParent(sphere.transform);
@@ -224,16 +228,20 @@ public class LoadDat_Single : MonoBehaviour {
 		foreach (var sphere in spheres) {
 
 			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
+            
+            var ps = sphere.GetComponent<ParticleSystem>();
+            var psColorModule = ps.colorOverLifetime;
+            psColorModule.color = colorsSpheresOff[numChrom];
 
-			//var propBlock = new MaterialPropertyBlock();
-			var r = colorsSpheresOff[numChrom].r;
-			var g = colorsSpheresOff[numChrom].g;
-			var b = colorsSpheresOff[numChrom].b;
+            //var propBlock = new MaterialPropertyBlock();
+            //var r = colorsSpheresOff[numChrom].r;
+            //var g = colorsSpheresOff[numChrom].g;
+            //var b = colorsSpheresOff[numChrom].b;
 
-			//propBlock.SetColor("_Color", new Color32(r, g, b, 10));
-			materials [numChrom].SetColor("_Color", new Color32(r, g, b, 10));
-            sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
-		}
+            //propBlock.SetColor("_Color", new Color32(r, g, b, 10));
+            //materials [numChrom].SetColor("_Color", new Color(r, g, b, 10));
+            //sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+        }
 
 	}
 
@@ -243,15 +251,19 @@ public class LoadDat_Single : MonoBehaviour {
 
 			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
 
-			//var propBlock = new MaterialPropertyBlock();
-			var r = colorsSpheresOn[numChrom].r;
-			var g = colorsSpheresOn[numChrom].g;
-			var b = colorsSpheresOn[numChrom].b;
+            var ps = sphere.GetComponent<ParticleSystem>();
+            var psColorModule = ps.colorOverLifetime;
+            psColorModule.color = colorsSpheresOn[numChrom];
 
-			//propBlock.SetColor("_Color", new Color32(r, g, b, 255));
-			materials [numChrom].SetColor("_Color", new Color32(r, g, b, 255));
-            sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
-		}
+            //var propBlock = new MaterialPropertyBlock();
+            //var r = colorsSpheresOn[numChrom].r;
+            //var g = colorsSpheresOn[numChrom].g;
+            //var b = colorsSpheresOn[numChrom].b;
+
+            //propBlock.SetColor("_Color", new Color32(r, g, b, 255));
+            //materials [numChrom].SetColor("_Color", new Color(r, g, b, 255));
+            //sphere.GetComponent<Renderer> ().SetPropertyBlock (materials [numChrom]);
+        }
 
 	}
 
