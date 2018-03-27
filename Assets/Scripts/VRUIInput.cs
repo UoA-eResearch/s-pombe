@@ -64,7 +64,7 @@ public class VRUIInput : MonoBehaviour
         if (currentSphere != null)
         {
             //Debug.Log("Sphere name " + currentSphere.name);
-            GameObject info = currentSphere.transform.GetChild(1).gameObject;
+			GameObject info = currentSphere.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
             if (info.activeInHierarchy)
             {
                 info.SetActive(false);
