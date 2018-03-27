@@ -177,8 +177,11 @@ public class LoadDat_Single : MonoBehaviour {
 				var fromNum = Int32.Parse(words [0]);
 				var toNum = Int32.Parse(words [1]);
 
-				Debug.Log (fromNum + " " + genes.First().Key);
+				for (var i = fromNum; i <= toNum; i++) {
+					activateGlow (i);
+				}
 
+				/*
 				if (genes.First ().Key.Contains("Chromosome 1")) {}
 				else if(genes.First ().Key.Contains("Chromosome 2")) {
 					fromNum = numberOfChromosomes[0] + fromNum;
@@ -216,7 +219,7 @@ public class LoadDat_Single : MonoBehaviour {
 					var direction = posAfterLast;
 					var geneName = string.Concat (fromNum.ToString () + " - " + toNum.ToString ());
 					InstantiateGene (startPoint, endPoint, fromNum, direction, geneName);
-
+				*/
 					toggleSpheresOff ();
 				
 			}
@@ -277,6 +280,11 @@ public class LoadDat_Single : MonoBehaviour {
 			var fromNum = Int32.Parse(words [0]);
 			var toNum = Int32.Parse(words [1]);
 
+			for (var i = fromNum; i <= toNum; i++) {
+				activateGlow (i);
+			}
+			toggleSpheresOff ();
+			/*
 			if (genes.First ().Key == "Chromosome 1") {}
 			else if(genes.First ().Key == "Chromosome 2") {
 				fromNum = numberOfChromosomes[0] + fromNum;
@@ -312,6 +320,15 @@ public class LoadDat_Single : MonoBehaviour {
                     toggleSpheresOff();
                 }
 			}
+			*/
+		}
+	}
+
+	private void activateGlow(int sphereNum){
+		if (spheres [sphereNum] != null) {
+			var sphGlow = spheres [sphereNum].transform.GetChild (0).gameObject;
+			sphGlow.SetActive(true);
+			genes.Add (sphGlow);
 		}
 	}
 
@@ -578,8 +595,10 @@ public class LoadDat_Single : MonoBehaviour {
 	public void RemoveAllGenes(bool spheresOn) {
         foreach (var gene in genes)
         {
-            Destroy(gene);
+            //Destroy(gene);
+			gene.SetActive(false);
         }
+
 		if (spheresOn) {
 			toggleSpheresOn ();
 		}
