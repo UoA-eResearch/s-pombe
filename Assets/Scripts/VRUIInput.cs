@@ -9,7 +9,6 @@ public class VRUIInput : MonoBehaviour
 	private SteamVR_LaserPointer laserPointer;
 	private SteamVR_TrackedController trackedController;
     GameObject currentSphere = null;
-    GameObject tempSphere = null;
 
 	private void OnEnable()
 	{
@@ -59,33 +58,22 @@ public class VRUIInput : MonoBehaviour
 
     private void HandleTriggerClicked(object sender, ClickedEventArgs e)
 	{
-
-        Debug.Log("In trigger");
         if (currentSphere != null)
         {
-            //Debug.Log("Sphere name " + currentSphere.name);
-			GameObject info = currentSphere.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
-            if (info.activeInHierarchy)
+			
+			GameObject gene = currentSphere.transform.GetChild (0).gameObject;
+
+            if (gene.activeInHierarchy)
             {
-                info.SetActive(false);
-                var count = currentSphere.GetComponent<LoadDat_Single>().genes.Count;
-                if (count > 0)
-                {
-                    currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes(false);
-                }
-                else {
-                    currentSphere.GetComponent<LoadDat_Single>().RemoveAllGenes(true);
-                }
-                
+				currentSphere.GetComponent<LoadDat_Single>().RemoveOneGene(Int32.Parse (gene.name));
             }
             else
             {
-                info.SetActive(true);
-                tempSphere = currentSphere;
+				currentSphere.GetComponent<LoadDat_Single> ().LoadGenesByClickSphere (Int32.Parse (gene.name));
                 
+				/*
+                tempSphere = currentSphere;
                 string geneText = tempSphere.GetComponentInParent<LoadDat_Single>().LoadGeneText(tempSphere.name);
-
-                //string[] lines = geneText.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 info.GetComponentInChildren<Text>().text = geneText;
                 var scrollbars = info.GetComponentsInChildren<Scrollbar>();
@@ -93,9 +81,7 @@ public class VRUIInput : MonoBehaviour
                 foreach (var bar in scrollbars) {
                     bar.value = 1.0f;
                 }
-
-                //tempSphere = null;
-
+				*/
             }
         }
 

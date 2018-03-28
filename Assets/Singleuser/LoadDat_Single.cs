@@ -23,7 +23,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public GameObject menu;
 	public GameObject togglePrefab;
 	private List<GameObject> spheres = new List<GameObject>();
-	public List<GameObject> genes = new List<GameObject>();
+	public List<int> genes = new List<int>();
 	private List<string> allGeneTags = new List<string>();
 	private List<string> changingDropdownGeneTags = new List<string>();
 	public Dictionary<string, List<string>> genesChrom1 = new Dictionary<string, List<string>>();
@@ -33,74 +33,277 @@ public class LoadDat_Single : MonoBehaviour {
 	private List<GameObject> toggles = new List<GameObject>();
 	private string searchString = "";
 	private int[] numberOfChromosomes;
+	private List<GameObject> geneObjects = new List<GameObject>();
+	List<Dictionary<string, List<string>>> dictionaries = new List<Dictionary<string, List<string>>>();
+	private List<GameObject> contentPanels = new List<GameObject>();
+	private List<string> geneInfo = new List<string> ();
 
-	void LoadFromDat()
-	{
-		foreach (GameObject go in spheres) Destroy(go);
-		spheres = new List<GameObject>();
-		numberOfChromosomes = new int[]{0, 0, 0};
-		var lines = structures[index].text.Split('\n');
 
-		for (int i = 0; i < lines.Length; i++)
+	////////////////////////////////////////////////////////
+	/// GET ADDITIONAL GENE INFORMATION /////////
+	///////////////////////////////////////////////////////
+
+	public void LoadGeneText(int sphereNumber){
+
+		for (var sph = 1; sph < genesChrom1.Count; sph++)
 		{
-			var l = lines[i];
-			if (l.Length == 0) continue;
-			var bits = l.Split();
-			var c = int.Parse(bits[0]);
-			var x = float.Parse(bits[1]);
-			var y = float.Parse(bits[2]);
-			var z = float.Parse(bits[3]);
-			var sphere = Instantiate(spherePrefab, transform);
-			sphere.name = i.ToString() + " Chrom: " + c;
-			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
-			sphere.transform.localPosition = new Vector3(x, y, z);
-            var ps = sphere.GetComponent<ParticleSystem>();
-            var psColorModule = ps.colorOverLifetime;
-            psColorModule.color = colorsSpheresOn[c];
 
-			/*
-            var info = Instantiate(infoPrefab, transform);
-            info.transform.SetParent(sphere.transform);
-            info.transform.localPosition = new Vector3(0, 1, 0);
-            info.SetActive(false);
-			*/
-            spheres.Add(sphere);
-		}
+			List<string> geneContent = genesChrom1.ElementAt(sph).Value;
+			var tagElements = genesChrom1.ElementAt(sph).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+			var geneText = new string[geneContent.Count];
 
-		Debug.Log ("Count of spheres: " + spheres.Count);
-	}
+			if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
 
-	public string LoadGeneText(string sphName){
-
-        var sphereObject = GameObject.Find(sphName);
-
-		
-		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
-        
-        string newString = null;
-
-        for (var gene = 1; gene < genesChrom1.Count; gene++)
-		{
-            
-            List<string> geneContent = genesChrom1.ElementAt(gene).Value;
-			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            var geneText = new string[geneContent.Count];
-
-            if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
-
-                for (var entry = 0; entry < geneContent.Count; entry++)
+				for (var entry = 0; entry < geneContent.Count; entry++)
 				{
 					geneText[entry] = geneContent.ElementAt(entry);
 				}
-                newString = string.Join(" ", geneText);
-            }
-        }
-        LoadGenesByClickSphere(genesChrom1, sphereNumber);
-        LoadGenesByClickSphere(genesChrom2, sphereNumber);
-        LoadGenesByClickSphere(genesChrom3, sphereNumber);
-
-        return newString;
+			}
+			geneInfo.Add(string.Join(" ", geneText));
+		}
 	}
+
+
+	////////////////////////////////////////////////////////
+	/// GENES /////////
+	///////////////////////////////////////////////////////
+
+	public void LoadGenesByClickSphere(int sphereNum){
+
+		foreach (var dictionary in dictionaries) {
+			foreach (var dictEntry in dictionary) {
+				if (dictEntry.Key.Contains ("Chromosome")) {
+					continue;
+				}
+			
+				var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+				var fromNum = Int32.Parse (words [0]);
+				var toNum = Int32.Parse (words [1]);
+
+				for (var i = fromNum; i <= toNum; i++) {
+					activateGlow (i);
+				}
+				toggleSpheresOff ();
+			}
+		}
+	}
+
+	public void LoadGenesByString(){
+
+		foreach (var dictionary in dictionaries) {
+			foreach (var dictEntry in dictionary) {
+				if (dictEntry.Key.Contains (searchString) || searchString == "") {
+
+					if (dictEntry.Key.Contains ("Chromosome")) {
+						continue;
+					}
+
+					var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+					var fromNum = Int32.Parse (words [0]);
+					var toNum = Int32.Parse (words [1]);
+
+					for (var i = fromNum; i <= toNum; i++) {
+						activateGlow (i);
+					}
+					toggleSpheresOff ();
+				}
+			}
+		}
+	}
+
+	private void activateGlow(int sphereNum){
+		if (spheres [sphereNum] != null) {
+			geneObjects.ElementAt(sphereNum).SetActive(true);
+			genes.Add (sphereNum);
+
+			LoadGeneText (sphereNum);
+		}
+		PrintGeneInfo ();
+	}
+
+	private void PrintGeneInfo(){
+		foreach (var panel in contentPanels) {
+			panel.GetComponentInChildren<Text> ().text = "";
+		}
+
+		for(var i = 0; i < geneInfo.Count; i++){
+			if(i < contentPanels.Count) {
+				contentPanels[i].GetComponentInChildren<Text> ().text = geneInfo.ElementAt(i);
+			} else {
+				contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo.ElementAt(i);
+				i = 1;
+			}
+		}
+	}
+
+	public void RemoveAllGenes(bool spheresOn) {
+		Debug.Log(genes.Count + " ");
+		foreach (var gene in genes)
+		{
+			geneObjects.ElementAt(gene).SetActive(false);
+			genes = new List<int> ();
+		}
+		geneInfo = new List<string>();
+		PrintGeneInfo ();
+
+		if (spheresOn) {
+			toggleSpheresOn ();
+		}
+	}
+
+	public void RemoveOneGene(int geneNumber) {
+		
+		geneObjects.ElementAt(geneNumber).SetActive(false);
+		geneInfo.Remove(spheres[geneNumber].name);
+		PrintGeneInfo ();
+
+		if (geneObjects.Count > 0) {
+			toggleSpheresOn ();
+		}
+	}
+
+
+	////////////////////////////////////////////////////////
+	/// NEXT STRUCTURE /////////
+	///////////////////////////////////////////////////////
+
+	public void LoadNext()
+	{
+		index++;
+		LoadFromDat();
+		foreach (var t in toggles)
+		{
+			if (t.GetComponent<Toggle>().isOn)
+			{
+				LoadWeight(t.name);
+			}
+		}
+
+		foreach (var gene in genes) {
+			geneObjects.ElementAt(gene).SetActive (true);
+			toggleSpheresOff ();
+		}
+	}
+
+
+
+
+	////////////////////////////////////////////////////////
+	/// DROPDOWN /////////
+	///////////////////////////////////////////////////////
+
+
+	//CALL WHEN USER CHANGES SELECTION OF DROPDOWN INPUT
+	public void DropdownInputChanged(int inputChoice){
+		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
+
+		if (searchString == "No Tag Selected") {
+			RemoveAllGenes(true);
+		}else{
+			RemoveAllGenes(false);
+
+			LoadGenesByString ();
+		}
+	}
+
+
+	//INSTANTIATE DROPDOWN ONCE
+	private void InstantiateDropdownList(){
+		allGeneTags.Add ("No Tag Selected");
+
+		foreach (var dictionary in dictionaries){
+			foreach (var gene in dictionary) {
+				if (gene.Value != null) {
+					allGeneTags.Add (gene.Key);
+					var nums = gene.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+					int numOne = Int32.Parse (nums [0]);
+					int numTwo = Int32.Parse (nums [1]);
+
+					spheres [numOne].transform.GetChild (0).gameObject.transform.GetChild (0).GetComponentInChildren<Text> ().text = gene.Key;
+
+					if (numOne != numTwo) {
+						spheres [numTwo].transform.GetChild (0).gameObject.transform.GetChild (0).GetComponentInChildren<Text> ().text = gene.Key;
+					}
+				}
+			}
+		}
+		changingDropdownGeneTags.AddRange (allGeneTags);
+	}
+
+
+	////////////////////////////////////////////////////////
+	/// TEXT INPUT /////////
+	///////////////////////////////////////////////////////
+
+	//CALL WHEN USER CHANGES TEXT INPUT FOR SEARCH
+	public void SearchInputChanged(string inputText){
+
+		changingDropdownGeneTags = new List<string> ();
+		changingDropdownGeneTags.Add ("No Tag Selected");
+		foreach (var tag in allGeneTags) {
+			if (tag.Contains (inputText)) {
+				changingDropdownGeneTags.Add (tag);
+			}
+		}
+
+		LoadDropdownGeneTags ();
+	}
+
+
+	//DISPLAY ONLY CERTAIN AMOUNT OF TAGS IN DROPDOWN DEPENDING ON TEXTFIELD SEARCH INPUT
+	private void LoadDropdownGeneTags(){
+		var dropdown = GameObject.Find("GeneTags").GetComponent<Dropdown> ();
+		dropdown.options.Clear ();
+		var count = 0;
+		foreach (string tag in changingDropdownGeneTags) {
+			count++;
+			if (count > 20) {
+				break;
+			}
+			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
+		}
+	}
+
+
+	////////////////////////////////////////////////////////
+	/// SPHERES TRANSPARENCY /////////
+	///////////////////////////////////////////////////////
+
+	void toggleSpheresOff(){
+
+		foreach (var sphere in spheres) {
+
+			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
+
+			var ps = sphere.GetComponent<ParticleSystem>();
+			var psColorModule = ps.colorOverLifetime;
+			psColorModule.color = colorsSpheresOff[numChrom];
+		}
+
+	}
+
+	void toggleSpheresOn(){
+
+		foreach (var sphere in spheres) {
+
+			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
+
+			var ps = sphere.GetComponent<ParticleSystem>();
+			var psColorModule = ps.colorOverLifetime;
+			psColorModule.color = colorsSpheresOn[numChrom];
+		}
+
+	}
+
+
+
+	////////////////////////////////////////////////////////
+	/// GENE FILES /////////
+	///////////////////////////////////////////////////////
+	// READ IN GENE FILES ONCE //
 
 	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
 		geneFiles = Resources.LoadAll<TextAsset>("Genes/");
@@ -113,7 +316,7 @@ public class LoadDat_Single : MonoBehaviour {
 		string name = "";
 
 		foreach (string line in linesChrom1) {
-			
+
 			if (line.StartsWith ("gene ")) {
 				var pos = CalculateSpherePosition (line);
 				if (pos != null) {
@@ -142,6 +345,17 @@ public class LoadDat_Single : MonoBehaviour {
 		}
 	}
 
+
+
+
+
+
+
+
+	////////////////////////////////////////////////////////
+	/// GET NUMBER OF SPHERE CORRELATING TO GENE POSITION /////////
+	///////////////////////////////////////////////////////
+
 	string CalculateSpherePosition(string line){
 		var words = line.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 		string locationInfo = words [1];
@@ -164,108 +378,9 @@ public class LoadDat_Single : MonoBehaviour {
 	}
 
 
-	void LoadGenesByString(Dictionary<string, List<string>> chromDict){
-
-		foreach (var dictEntry in chromDict) {
-			if (dictEntry.Key.Contains (searchString) || searchString == "") {
-
-				if(dictEntry.Key.Contains("Chromosome")){continue;}
-
-				var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-				var fromNum = Int32.Parse(words [0]);
-				var toNum = Int32.Parse(words [1]);
-
-				for (var i = fromNum; i <= toNum; i++) {
-					activateGlow (i);
-				}
-					toggleSpheresOff ();
-				
-			}
-		}
-	}
-
-	void toggleSpheresOff(){
-
-		foreach (var sphere in spheres) {
-
-			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
-            
-            var ps = sphere.GetComponent<ParticleSystem>();
-            var psColorModule = ps.colorOverLifetime;
-            psColorModule.color = colorsSpheresOff[numChrom];
-        }
-
-	}
-
-	void toggleSpheresOn(){
-
-		foreach (var sphere in spheres) {
-
-			var numChrom = Int32.Parse(sphere.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[2]);
-
-            var ps = sphere.GetComponent<ParticleSystem>();
-            var psColorModule = ps.colorOverLifetime;
-            psColorModule.color = colorsSpheresOn[numChrom];
-        }
-
-	}
-
-	void LoadGenesByClickSphere(Dictionary<string, List<string>> chromDict, int sphereNum){
-
-		foreach (var dictEntry in chromDict) {
-			if(dictEntry.Key.Contains("Chromosome")){continue;}
-			
-			var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-			var fromNum = Int32.Parse(words [0]);
-			var toNum = Int32.Parse(words [1]);
-
-			for (var i = fromNum; i <= toNum; i++) {
-				activateGlow (i);
-			}
-			toggleSpheresOff ();
-		}
-	}
-
-	private void activateGlow(int sphereNum){
-		if (spheres [sphereNum] != null) {
-			var sphGlow = spheres [sphereNum].transform.GetChild (0).gameObject;
-			sphGlow.SetActive(true);
-			sphGlow.name = sphereNum.ToString();
-			genes.Add (sphGlow);
-		}
-	}
-
-	public void LoadNext()
-	{
-		index++;
-		LoadFromDat();
-		foreach (var t in toggles)
-		{
-			if (t.GetComponent<Toggle>().isOn)
-			{
-				LoadWeight(t.name);
-			}
-		}
-
-		//List<int> numbers = new List<int> ();
-		RemoveAllGenes(false);
-
-		foreach (var gene in genes) {
-			//numbers.Add(Int32.Parse(gene.name.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries) [1]));
-			spheres[Int32.Parse (gene.name)].transform.GetChild(0).gameObject.SetActive(true);
-			spheres[Int32.Parse (gene.name)].transform.GetChild(1).gameObject.SetActive(true);
-		}
-		//RemoveAllGenes (false);
-		//genes = new List<GameObject> ();
-
-		//foreach (var num in numbers) {
-		//	LoadGenesByClickSphere(genesChrom1, num);
-		//	LoadGenesByClickSphere(genesChrom2, num);
-		//	LoadGenesByClickSphere(genesChrom3, num);
-		//}
-	}
+	////////////////////////////////////////////////////////
+	/// WEIGHTS /////////
+	///////////////////////////////////////////////////////
 
 	public void LoadWeight(string name)
 	{
@@ -310,6 +425,93 @@ public class LoadDat_Single : MonoBehaviour {
 			}
 		}
 	}
+
+
+
+	////////////////////////////////////////////////////////
+	/// INITIALIZATION /////////
+	///////////////////////////////////////////////////////
+
+	void Start () {
+		structures = Resources.LoadAll<TextAsset>("Structures/");
+		weights = Resources.LoadAll<TextAsset>("Weights/");
+		InitColors();
+		InitRotations();
+		Debug.Log(structures.Length + " structures " + weights.Length + " weights");
+
+		// Setup menu
+		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
+		var count = 0;
+
+		foreach (var w in weights)
+		{
+			var toggle = Instantiate(togglePrefab, menu.transform);
+			toggle.GetComponentInChildren<Text>().text = w.name;
+			toggle.GetComponentInChildren<Text>().color = colorsWeights[count];
+			toggle.name = w.name;
+			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
+			toggles.Add(toggle);
+			y -= 30;
+			markers.Add(w.name, new List<GameObject>());
+			count += 1;
+		}
+
+		genesChrom1.Add ("Chromosome 1", null);
+		genesChrom2.Add ("Chromosome 2", null);
+		genesChrom3.Add ("Chromosome 3", null);
+
+		ReadGeneFiles (genesChrom1, 0);
+		ReadGeneFiles (genesChrom2, 1);
+		ReadGeneFiles (genesChrom3, 2);
+
+		dictionaries.Add(genesChrom1);
+		dictionaries.Add(genesChrom2);
+		dictionaries.Add(genesChrom3);
+
+		LoadFromDat();
+
+		InstantiateDropdownList ();
+
+		LoadDropdownGeneTags ();
+	}
+
+	////////////////////////////////////////////////////////
+	/// INSTANTIATE DNA STRUCTURE INCLUDING SPHERES, GENES AND GENE INFO /////////
+	///////////////////////////////////////////////////////
+	void LoadFromDat()
+	{
+		foreach (GameObject go in spheres) Destroy(go);
+		spheres = new List<GameObject>();
+		geneObjects = new List<GameObject> ();
+		numberOfChromosomes = new int[]{0, 0, 0};
+		var lines = structures[index].text.Split('\n');
+
+		for (int i = 0; i < lines.Length; i++)
+		{
+			var l = lines[i];
+			if (l.Length == 0) continue;
+			var bits = l.Split();
+			var c = int.Parse(bits[0]);
+			var x = float.Parse(bits[1]);
+			var y = float.Parse(bits[2]);
+			var z = float.Parse(bits[3]);
+			var sphere = Instantiate(spherePrefab, transform);
+			sphere.name = i.ToString() + " Chrom: " + c;
+			numberOfChromosomes [c] = numberOfChromosomes [c] + 1;
+			sphere.transform.localPosition = new Vector3(x, y, z);
+			var ps = sphere.GetComponent<ParticleSystem>();
+			var psColorModule = ps.colorOverLifetime;
+			psColorModule.color = colorsSpheresOn[c];
+
+			var gene = sphere.transform.GetChild (0).gameObject;
+			gene.name = i.ToString ();
+			geneObjects.Add(gene);
+			spheres.Add(sphere);
+		}
+		toggleSpheresOn ();
+		Debug.Log ("Count of spheres: " + spheres.Count);
+	}
+
 
 	void InitColors()
 	{
@@ -389,123 +591,9 @@ public class LoadDat_Single : MonoBehaviour {
 
 	}
 
-	// Use this for initialization
-	void Start () {
-		structures = Resources.LoadAll<TextAsset>("Structures/");
-		weights = Resources.LoadAll<TextAsset>("Weights/");
-		InitColors();
-		InitRotations();
-		Debug.Log(structures.Length + " structures " + weights.Length + " weights");
-
-		// Setup menu
-		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
-		var count = 0;
-
-		foreach (var w in weights)
-		{
-			var toggle = Instantiate(togglePrefab, menu.transform);
-			toggle.GetComponentInChildren<Text>().text = w.name;
-			toggle.GetComponentInChildren<Text>().color = colorsWeights[count];
-			toggle.name = w.name;
-			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
-			toggles.Add(toggle);
-			y -= 30;
-			markers.Add(w.name, new List<GameObject>());
-			count += 1;
-		}
-
-		genesChrom1.Add ("Chromosome 1", null);
-		genesChrom2.Add ("Chromosome 2", null);
-		genesChrom3.Add ("Chromosome 3", null);
-
-		ReadGeneFiles (genesChrom1, 0);
-		ReadGeneFiles (genesChrom2, 1);
-		ReadGeneFiles (genesChrom3, 2);
-
-		LoadFromDat();
-
-		InstantiateDropdownList (genesChrom1);
-		InstantiateDropdownList (genesChrom2);
-		InstantiateDropdownList (genesChrom3);
-
-		LoadDropdownGeneTags ();
-    }
-
-	private void InstantiateDropdownList(Dictionary<string, List<string>> chromDict){
-		allGeneTags.Add ("No Tag Selected");
-		foreach (var gene in chromDict) {
-			if (gene.Value != null) {
-				allGeneTags.Add (gene.Key);
-				var nums = gene.Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-				int numOne = Int32.Parse (nums [0]);
-				int numTwo = Int32.Parse (nums [1]);
-
-				Debug.Log ("sph " + spheres[numOne].name);
-
-				spheres [numOne].transform.GetChild(0).gameObject.transform.GetChild(0).GetComponentInChildren<Text> ().text = gene.Key;
-
-				if (numOne != numTwo) {
-					spheres [numTwo].transform.GetChild(0).gameObject.transform.GetChild(0).GetComponentInChildren<Text> ().text = gene.Key;
-				}
-			}
-		}
-		changingDropdownGeneTags.AddRange (allGeneTags);
-	}
-
-	private void LoadDropdownGeneTags(){
-		var dropdown = GameObject.Find("GeneTags").GetComponent<Dropdown> ();
-		dropdown.options.Clear ();
-		var count = 0;
-		foreach (string tag in changingDropdownGeneTags) {
-			count++;
-			if (count > 20) {
-				break;
-			}
-			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
-		}
-	}
-	public void RemoveAllGenes(bool spheresOn) {
-        foreach (var gene in genes)
-        {
-            //Destroy(gene);
-			gene.SetActive(false);
-        }
-
-		if (spheresOn) {
-			toggleSpheresOn ();
-		}
-    }
-
-	public void DropdownInputChanged(int inputChoice){
-		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
-
-		if (searchString == "No Tag Selected") {
-			RemoveAllGenes(true);
-		}else{
-			RemoveAllGenes(false);
-
-			LoadGenesByString (genesChrom1);
-			LoadGenesByString (genesChrom2);
-			LoadGenesByString (genesChrom3);
-		}
-	}
-
-	public void SearchInputChanged(string inputText){
-		
-		changingDropdownGeneTags = new List<string> ();
-		changingDropdownGeneTags.Add ("No Tag Selected");
-		foreach (var tag in allGeneTags) {
-			if (tag.Contains (inputText)) {
-				changingDropdownGeneTags.Add (tag);
-			}
-		}
-
-		LoadDropdownGeneTags ();
-	}
-
-	// Update is called once per frame
-	void Update () {
-
+	void Awake(){
+		contentPanels.Add(GameObject.Find ("Content1"));
+		contentPanels.Add(GameObject.Find ("Content2"));
+		contentPanels.Add(GameObject.Find ("Content3"));
 	}
 }
