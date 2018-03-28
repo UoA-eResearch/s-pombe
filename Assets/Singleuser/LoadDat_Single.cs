@@ -43,13 +43,21 @@ public class LoadDat_Single : MonoBehaviour {
 	/// GET ADDITIONAL GENE INFORMATION /////////
 	///////////////////////////////////////////////////////
 
-	public void LoadGeneText(int sphereNumber){
+	public string LoadGeneText(string sphName){
+		
 
-		for (var sph = 1; sph < genesChrom1.Count; sph++)
+		var sphereObject = GameObject.Find(sphName);
+
+		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
+
+		string newString = null;
+
+
+		for (var gene = 1; gene < genesChrom1.Count; gene++)
 		{
 
-			List<string> geneContent = genesChrom1.ElementAt(sph).Value;
-			var tagElements = genesChrom1.ElementAt(sph).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+			List<string> geneContent = genesChrom1.ElementAt(gene).Value;
+			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 			var geneText = new string[geneContent.Count];
 
 			if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
@@ -58,9 +66,11 @@ public class LoadDat_Single : MonoBehaviour {
 				{
 					geneText[entry] = geneContent.ElementAt(entry);
 				}
+				newString = string.Join(" ", geneText);
 			}
-			geneInfo.Add(string.Join(" ", geneText));
 		}
+
+		return newString;
 	}
 
 
@@ -118,7 +128,8 @@ public class LoadDat_Single : MonoBehaviour {
 			geneObjects.ElementAt(sphereNum).SetActive(true);
 			genes.Add (sphereNum);
 
-			LoadGeneText (sphereNum);
+			string info = LoadGeneText (spheres [sphereNum].name);
+			geneInfo.Add (info);
 		}
 		PrintGeneInfo ();
 	}
@@ -127,12 +138,12 @@ public class LoadDat_Single : MonoBehaviour {
 		foreach (var panel in contentPanels) {
 			panel.GetComponentInChildren<Text> ().text = "";
 		}
-
+		
 		for(var i = 0; i < geneInfo.Count; i++){
 			if(i < contentPanels.Count) {
-				contentPanels[i].GetComponentInChildren<Text> ().text = geneInfo.ElementAt(i);
+				contentPanels[i].GetComponentInChildren<Text> ().text = geneInfo[i];
 			} else {
-				contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo.ElementAt(i);
+				contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo[i];
 				i = 1;
 			}
 		}
@@ -145,7 +156,7 @@ public class LoadDat_Single : MonoBehaviour {
 			geneObjects.ElementAt(gene).SetActive(false);
 			genes = new List<int> ();
 		}
-		geneInfo = new List<string>();
+		geneInfo = new List<string> ();
 		PrintGeneInfo ();
 
 		if (spheresOn) {
@@ -156,7 +167,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public void RemoveOneGene(int geneNumber) {
 		
 		geneObjects.ElementAt(geneNumber).SetActive(false);
-		geneInfo.Remove(spheres[geneNumber].name);
+		geneInfo.Remove(spheres [geneNumber].name);
 		PrintGeneInfo ();
 
 		if (geneObjects.Count > 0) {
