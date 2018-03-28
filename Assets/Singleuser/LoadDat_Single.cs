@@ -79,48 +79,21 @@ public class LoadDat_Single : MonoBehaviour {
 	///////////////////////////////////////////////////////
 
 	public void LoadGenesByClickSphere(int sphereNum){
-
-		foreach (var dictionary in dictionaries) {
-			foreach (var dictEntry in dictionary) {
-				if (dictEntry.Key.Contains ("Chromosome")) {
-					continue;
-				}
-			
-				var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-				var fromNum = Int32.Parse (words [0]);
-				var toNum = Int32.Parse (words [1]);
-
-				for (var i = fromNum; i <= toNum; i++) {
-					activateGlow (i);
-				}
-				toggleSpheresOff ();
-			}
-		}
-	}
+        activateGlow(sphereNum);
+        toggleSpheresOff();
+    }
 
 	public void LoadGenesByString(){
 
-		foreach (var dictionary in dictionaries) {
-			foreach (var dictEntry in dictionary) {
-				if (dictEntry.Key.Contains (searchString) || searchString == "") {
+		var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-					if (dictEntry.Key.Contains ("Chromosome")) {
-						continue;
-					}
+		var fromNum = Int32.Parse (words [0]);
+		var toNum = Int32.Parse (words [1]);
 
-					var words = dictEntry.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-					var fromNum = Int32.Parse (words [0]);
-					var toNum = Int32.Parse (words [1]);
-
-					for (var i = fromNum; i <= toNum; i++) {
-						activateGlow (i);
-					}
-					toggleSpheresOff ();
-				}
-			}
+		for (var i = fromNum; i <= toNum; i++) {
+			activateGlow (i);
 		}
+		toggleSpheresOff ();
 	}
 
 	private void activateGlow(int sphereNum){
@@ -138,19 +111,20 @@ public class LoadDat_Single : MonoBehaviour {
 		foreach (var panel in contentPanels) {
 			panel.GetComponentInChildren<Text> ().text = "";
 		}
-		
+        Debug.Log(geneInfo.Count);
 		for(var i = 0; i < geneInfo.Count; i++){
 			if(i < contentPanels.Count) {
 				contentPanels[i].GetComponentInChildren<Text> ().text = geneInfo[i];
 			} else {
-				contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo[i];
-				i = 1;
+                //contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo[i];
+                //i = 1;
+                break;
 			}
 		}
 	}
 
 	public void RemoveAllGenes(bool spheresOn) {
-		Debug.Log(genes.Count + " ");
+		
 		foreach (var gene in genes)
 		{
 			geneObjects.ElementAt(gene).SetActive(false);
@@ -209,11 +183,12 @@ public class LoadDat_Single : MonoBehaviour {
 	//CALL WHEN USER CHANGES SELECTION OF DROPDOWN INPUT
 	public void DropdownInputChanged(int inputChoice){
 		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
-
-		if (searchString == "No Tag Selected") {
+        Debug.Log(inputChoice + " " + searchString);
+		if (inputChoice == 0) {
 			RemoveAllGenes(true);
 		}else{
-			RemoveAllGenes(false);
+            Debug.Log(inputChoice + " " + searchString);
+            RemoveAllGenes(false);
 
 			LoadGenesByString ();
 		}
