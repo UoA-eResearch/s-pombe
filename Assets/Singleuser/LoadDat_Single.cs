@@ -36,7 +36,7 @@ public class LoadDat_Single : MonoBehaviour {
 	private List<GameObject> geneObjects = new List<GameObject>();
 	List<Dictionary<string, List<string>>> dictionaries = new List<Dictionary<string, List<string>>>();
 	private List<GameObject> contentPanels = new List<GameObject>();
-	private List<string> geneInfo = new List<string> ();
+	private Dictionary<int, string> geneInfo = new Dictionary<int, string> ();
 
 
 	////////////////////////////////////////////////////////
@@ -44,14 +44,12 @@ public class LoadDat_Single : MonoBehaviour {
 	///////////////////////////////////////////////////////
 
 	public string LoadGeneText(string sphName){
-		
 
-		var sphereObject = GameObject.Find(sphName);
+		var sphereNumber = Int32.Parse(sphName.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
 
-		var sphereNumber = Int32.Parse(sphereObject.name.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
+		var sphereObject = spheres [sphereNumber];
 
-		string newString = null;
-
+		string newString = "";
 
 		for (var gene = 1; gene < genesChrom1.Count; gene++)
 		{
@@ -59,6 +57,7 @@ public class LoadDat_Single : MonoBehaviour {
 			List<string> geneContent = genesChrom1.ElementAt(gene).Value;
 			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 			var geneText = new string[geneContent.Count];
+			var tempString = "";
 
 			if (Int32.Parse(tagElements[0]) == sphereNumber || Int32.Parse(tagElements[1]) == sphereNumber) {
 
@@ -66,8 +65,9 @@ public class LoadDat_Single : MonoBehaviour {
 				{
 					geneText[entry] = geneContent.ElementAt(entry);
 				}
-				newString = string.Join(" ", geneText);
+				tempString = string.Join(" ", geneText);
 			}
+			newString = newString + "\n\n" + tempString;
 		}
 
 		return newString;
@@ -97,24 +97,42 @@ public class LoadDat_Single : MonoBehaviour {
 	}
 
 	private void activateGlow(int sphereNum){
-		if (spheres [sphereNum] != null) {
-			geneObjects.ElementAt(sphereNum).SetActive(true);
-			genes.Add (sphereNum);
+		
+		geneObjects.ElementAt(sphereNum).SetActive(true);
+		genes.Add (sphereNum);
 
-			string info = LoadGeneText (spheres [sphereNum].name);
-			geneInfo.Add (info);
-		}
+		string info = LoadGeneText (spheres [sphereNum].name);
+		geneInfo.Add (sphereNum, info);
 		PrintGeneInfo ();
 	}
 
 	private void PrintGeneInfo(){
+		
 		foreach (var panel in contentPanels) {
 			panel.GetComponentInChildren<Text> ().text = "";
 		}
-        Debug.Log(geneInfo.Count);
+        
 		for(var i = 0; i < geneInfo.Count; i++){
 			if(i < contentPanels.Count) {
-				contentPanels[i].GetComponentInChildren<Text> ().text = geneInfo[i];
+				var info = geneInfo.ElementAt (i);
+				contentPanels[i].GetComponentInChildren<Text> ().text = info.Value;
+
+				string pattern = @"(\/locus_tag="".*?\"")";
+				MatchCollection matches = Regex.Matches (info.Value, pattern);
+
+				var uniqueMatches = matches
+					.OfType<Match>()
+					.Select(m => m.Value)
+					.Distinct()
+					.ToList();
+
+				string locusTags = "";
+				foreach (var locusTag in uniqueMatches) {
+					locusTags = locusTags + "\n" + locusTag.Split(new string[] { "\"" }, StringSplitOptions.RemoveEmptyEntries)[1];
+				}
+
+				geneObjects [info.Key].transform.GetChild (0).gameObject.GetComponentInChildren<Text> ().text = locusTags;
+
 			} else {
                 //contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo[i];
                 //i = 1;
@@ -130,7 +148,7 @@ public class LoadDat_Single : MonoBehaviour {
 			geneObjects.ElementAt(gene).SetActive(false);
 			genes = new List<int> ();
 		}
-		geneInfo = new List<string> ();
+		geneInfo = new Dictionary<int, string> ();
 		PrintGeneInfo ();
 
 		if (spheresOn) {
@@ -141,7 +159,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public void RemoveOneGene(int geneNumber) {
 		
 		geneObjects.ElementAt(geneNumber).SetActive(false);
-		geneInfo.Remove(spheres [geneNumber].name);
+		geneInfo.Remove (geneNumber);
 		PrintGeneInfo ();
 
 		if (geneObjects.Count > 0) {
@@ -183,11 +201,10 @@ public class LoadDat_Single : MonoBehaviour {
 	//CALL WHEN USER CHANGES SELECTION OF DROPDOWN INPUT
 	public void DropdownInputChanged(int inputChoice){
 		searchString = changingDropdownGeneTags.ElementAt (inputChoice);
-        Debug.Log(inputChoice + " " + searchString);
+        
 		if (inputChoice == 0) {
 			RemoveAllGenes(true);
 		}else{
-            Debug.Log(inputChoice + " " + searchString);
             RemoveAllGenes(false);
 
 			LoadGenesByString ();
