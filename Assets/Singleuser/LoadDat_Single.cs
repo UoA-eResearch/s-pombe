@@ -79,12 +79,28 @@ public class LoadDat_Single : MonoBehaviour {
 	///////////////////////////////////////////////////////
 
 	public void LoadGenesByClickSphere(int sphereNum){
-        activateGlow(sphereNum);
+        //allGeneTags.Count
+        for (var tag = 1; tag < 5; tag++)
+        {
+
+            var tagSphereNums = allGeneTags.ElementAt(tag).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            var firstSphere = Int32.Parse(tagSphereNums[0]);
+            var secondSphere = Int32.Parse(tagSphereNums[1]);
+
+            if (sphereNum >= firstSphere && sphereNum <= secondSphere) {
+                for (var num = firstSphere; num <= secondSphere; num++)
+                {
+                    activateGlow(num);
+                }
+            }
+        }
         toggleSpheresOff();
     }
 
 	public void LoadGenesByString(){
-
+        LoadGenesByClickSphere(0);
+        /*
 		var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
 		var fromNum = Int32.Parse (words [0]);
@@ -94,16 +110,18 @@ public class LoadDat_Single : MonoBehaviour {
 			activateGlow (i);
 		}
 		toggleSpheresOff ();
+        */
 	}
 
 	private void activateGlow(int sphereNum){
 		
 		geneObjects.ElementAt(sphereNum).SetActive(true);
 		genes.Add (sphereNum);
-
+        
 		string info = LoadGeneText (spheres [sphereNum].name);
-		geneInfo.Add (sphereNum, info);
-		PrintGeneInfo ();
+        
+        geneInfo.Add(sphereNum, info);
+        PrintGeneInfo();
 	}
 
 	private void PrintGeneInfo(){
