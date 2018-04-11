@@ -10,7 +10,6 @@ public class LoadDat_Single : MonoBehaviour {
 	public int index = 0;
 	TextAsset[] structures;
 	TextAsset[] weights;
-	TextAsset[] geneFiles;
 	public GameObject spherePrefab;
 	public GameObject markerPrefab;
 	public GameObject genePrefab;
@@ -26,9 +25,7 @@ public class LoadDat_Single : MonoBehaviour {
 	public List<int> genes = new List<int>();
 	private List<string> allGeneTags = new List<string>();
 	private List<string> changingDropdownGeneTags = new List<string>();
-	public Dictionary<string, List<string>> genesChrom1 = new Dictionary<string, List<string>>();
-	public Dictionary<string, List<string>> genesChrom2 = new Dictionary<string, List<string>>();
-	public Dictionary<string, List<string>> genesChrom3 = new Dictionary<string, List<string>>();
+	public Dictionary<string, List<string>> genesComplete = new Dictionary<string, List<string>>();
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	private List<GameObject> toggles = new List<GameObject>();
 	private string searchString = "";
@@ -37,6 +34,8 @@ public class LoadDat_Single : MonoBehaviour {
 	List<Dictionary<string, List<string>>> dictionaries = new List<Dictionary<string, List<string>>>();
 	private List<GameObject> contentPanels = new List<GameObject>();
 	private Dictionary<int, string> geneInfo = new Dictionary<int, string> ();
+	Dictionary<int, List<int>> linkSpheresGenes = new Dictionary<int, List<int>> ();
+	private int whichChromosome = 1;
 
 
 	////////////////////////////////////////////////////////
@@ -51,11 +50,11 @@ public class LoadDat_Single : MonoBehaviour {
 
 		string newString = "";
 
-		for (var gene = 1; gene < genesChrom1.Count; gene++)
+		for (var gene = 1; gene < genesComplete.Count; gene++)
 		{
 
-			List<string> geneContent = genesChrom1.ElementAt(gene).Value;
-			var tagElements = genesChrom1.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+			List<string> geneContent = genesComplete.ElementAt(gene).Value;
+			var tagElements = genesComplete.ElementAt(gene).Key.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 			var geneText = new string[geneContent.Count];
 			var tempString = "";
 
@@ -78,29 +77,49 @@ public class LoadDat_Single : MonoBehaviour {
 	/// GENES /////////
 	///////////////////////////////////////////////////////
 
-	public void LoadGenesByClickSphere(int sphereNum){
-        //allGeneTags.Count
-        for (var tag = 1; tag < 5; tag++)
-        {
+	public void LinkSpheresTagsNumbers(){
 
-            var tagSphereNums = allGeneTags.ElementAt(tag).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		//spheres.Count
+		//for (var i = 0; i < 20; i++) {
+		for (var tag = 1; tag < allGeneTags.Count; tag++){
 
-            var firstSphere = Int32.Parse(tagSphereNums[0]);
-            var secondSphere = Int32.Parse(tagSphereNums[1]);
+			var tagSphereNums = allGeneTags.ElementAt(tag).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (sphereNum >= firstSphere && sphereNum <= secondSphere) {
-                for (var num = firstSphere; num <= secondSphere; num++)
-                {
-                    activateGlow(num);
-                }
-            }
-        }
-        toggleSpheresOff();
+			var firstSphere = Int32.Parse(tagSphereNums[0]);
+			var secondSphere = Int32.Parse(tagSphereNums[1]);
+			//Debug.Log (firstSphere + " first and second " + secondSphere);
+
+			//if (i >= firstSphere && i <= secondSphere) {
+				for (var num = firstSphere; num <= secondSphere; num++)
+				{
+					
+					if (linkSpheresGenes.ContainsKey(num)) {
+						linkSpheresGenes [num].Add (tag);
+						//Debug.Log (num + " " + tag);
+					} else {
+						var newList = new List<int> ();
+						newList.Add (tag);
+						linkSpheresGenes.Add (num, newList);
+						//Debug.Log (num + " in new list " + tag);
+					}
+				}
+			//}
+		}
+		//}
+		Debug.Log(linkSpheresGenes[1].Count);
     }
 
+	public void LoadGenesByClickSphere(int sphereNum){
+				var geneIndexes = linkSpheresGenes [sphereNum];
+
+		foreach (var indexOfGene in geneIndexes) {
+			searchString = allGeneTags.ElementAt (indexOfGene);
+			LoadGenesByString();
+		}
+	}
+
 	public void LoadGenesByString(){
-        LoadGenesByClickSphere(0);
-        /*
+		
 		var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
 		var fromNum = Int32.Parse (words [0]);
@@ -110,7 +129,7 @@ public class LoadDat_Single : MonoBehaviour {
 			activateGlow (i);
 		}
 		toggleSpheresOff ();
-        */
+        
 	}
 
 	private void activateGlow(int sphereNum){
@@ -119,9 +138,11 @@ public class LoadDat_Single : MonoBehaviour {
 		genes.Add (sphereNum);
         
 		string info = LoadGeneText (spheres [sphereNum].name);
-        
-        geneInfo.Add(sphereNum, info);
-        PrintGeneInfo();
+		if(!geneInfo.ContainsKey(sphereNum)){
+			geneInfo.Add(sphereNum, info);
+			PrintGeneInfo();
+		}
+
 	}
 
 	private void PrintGeneInfo(){
@@ -234,22 +255,9 @@ public class LoadDat_Single : MonoBehaviour {
 	private void InstantiateDropdownList(){
 		allGeneTags.Add ("No Tag Selected");
 
-		foreach (var dictionary in dictionaries){
-			foreach (var gene in dictionary) {
-				if (gene.Value != null) {
-					allGeneTags.Add (gene.Key);
-					var nums = gene.Key.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-					int numOne = Int32.Parse (nums [0]);
-					int numTwo = Int32.Parse (nums [1]);
-
-					spheres [numOne].transform.GetChild (0).gameObject.transform.GetChild (0).GetComponentInChildren<Text> ().text = gene.Key;
-
-					if (numOne != numTwo) {
-						spheres [numTwo].transform.GetChild (0).gameObject.transform.GetChild (0).GetComponentInChildren<Text> ().text = gene.Key;
-					}
-				}
-			}
+		foreach (var gene in genesComplete) {
+			allGeneTags.Add (gene.Key);
+			//Debug.Log (gene.Key);
 		}
 		changingDropdownGeneTags.AddRange (allGeneTags);
 	}
@@ -326,32 +334,39 @@ public class LoadDat_Single : MonoBehaviour {
 	///////////////////////////////////////////////////////
 	// READ IN GENE FILES ONCE //
 
-	void ReadGeneFiles(Dictionary<string, List<string>> genes, int fileNum){
-		geneFiles = Resources.LoadAll<TextAsset>("Genes/");
+	void ReadGeneFiles(){
+		var chromosomeFile = Resources.Load<TextAsset>("Genes/Genes_Complete");
 
-		var chromosomeFile = geneFiles [fileNum];
-
-		string[] linesChrom1 = chromosomeFile.text.Split ('\n');
+		string[] lines = chromosomeFile.text.Split ('\n');
 
 		List<string> tempList = new List<string> ();
 		string name = "";
 
-		foreach (string line in linesChrom1) {
+		foreach (string line in lines) {
 
 			if (line.StartsWith ("gene ")) {
-				var pos = CalculateSpherePosition (line);
-				if (pos != null) {
+				if (line.Contains("gene complement(<1..5662)")) {
+					whichChromosome = 1;
+				}
+				if (line.Contains("gene 5451..6318")) {
+					whichChromosome = 2;
+				}
+				if (line.Contains("gene complement(1..2852)")) {
+					whichChromosome = 3;
+				}
 
+				var pos = CalculateSpherePosition (line);
+
+				if (pos != null) {
 					if (name != "") {
-						genes.Add (name, tempList);
+						genesComplete.Add (name, tempList);
+						//Debug.Log(genesComplete.Last());
 						name = "";
 					}
-
 					name = pos;
 					tempList = new List<string> ();
 				}
 			}
-
 			tempList.Add (line);
 
 			if (line.Contains ("locus_tag") == true && name.Contains("locus_tag") == false) {
@@ -364,6 +379,7 @@ public class LoadDat_Single : MonoBehaviour {
 				name = name + " " + line;
 			}
 		}
+		genesComplete.Add (name, tempList);
 	}
 
 
@@ -381,17 +397,26 @@ public class LoadDat_Single : MonoBehaviour {
 		var words = line.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 		string locationInfo = words [1];
 		var numbers = locationInfo.Split (new string[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
-		string from = "";
+		string fro = "";
 		string to = "";
 		try {
-			from = numbers [0];
+			fro = numbers [0];
 			to = numbers [1];
 
-			from = Regex.Match (from, @"\d+").Value;
+			fro = Regex.Match (fro, @"\d+").Value;
 			to = Regex.Match (to, @"\d+").Value;
 
-			int fromNum = Int32.Parse (from) / 3583;
-			int toNum = Int32.Parse (to) / 3583;
+			int fromNum = Int32.Parse (fro) / 3499;
+			int toNum = Int32.Parse (to) / 3499;
+
+			if(whichChromosome == 2){
+				fromNum += 1593;
+				toNum += 1593;
+			}
+			if(whichChromosome == 3){
+				fromNum += 2882;
+				toNum += 2882;
+			}
 
 			string pos = fromNum + " " + toNum;
 			return pos;
@@ -477,23 +502,17 @@ public class LoadDat_Single : MonoBehaviour {
 			count += 1;
 		}
 
-		genesChrom1.Add ("Chromosome 1", null);
-		genesChrom2.Add ("Chromosome 2", null);
-		genesChrom3.Add ("Chromosome 3", null);
-
-		ReadGeneFiles (genesChrom1, 0);
-		ReadGeneFiles (genesChrom2, 1);
-		ReadGeneFiles (genesChrom3, 2);
-
-		dictionaries.Add(genesChrom1);
-		dictionaries.Add(genesChrom2);
-		dictionaries.Add(genesChrom3);
+		ReadGeneFiles ();
 
 		LoadFromDat();
 
 		InstantiateDropdownList ();
 
 		LoadDropdownGeneTags ();
+
+		LinkSpheresTagsNumbers ();
+
+		LoadGenesByClickSphere (1);
 	}
 
 	////////////////////////////////////////////////////////
