@@ -29,7 +29,8 @@ public class LoadDat_Single : MonoBehaviour {
 	public Dictionary<string, List<GameObject>> markers = new Dictionary<string, List<GameObject>>();
 	private List<GameObject> toggles = new List<GameObject>();
 	private string searchString = "";
-	private int[] numberOfChromosomes;
+    private string removeString = "";
+    private int[] numberOfChromosomes;
 	private List<GameObject> geneObjects = new List<GameObject>();
 	List<Dictionary<string, List<string>>> dictionaries = new List<Dictionary<string, List<string>>>();
 	private List<GameObject> contentPanels = new List<GameObject>();
@@ -50,7 +51,7 @@ public class LoadDat_Single : MonoBehaviour {
 
 		string newString = "";
 
-		for (var gene = 1; gene < genesComplete.Count; gene++)
+		for (var gene = 0; gene < genesComplete.Count; gene++)
 		{
 
 			List<string> geneContent = genesComplete.ElementAt(gene).Value;
@@ -78,39 +79,32 @@ public class LoadDat_Single : MonoBehaviour {
 	///////////////////////////////////////////////////////
 
 	public void LinkSpheresTagsNumbers(){
-
-		//spheres.Count
-		//for (var i = 0; i < 20; i++) {
+		
+		//First Tag is "No Tag Selected"
 		for (var tag = 1; tag < allGeneTags.Count; tag++){
 
 			var tagSphereNums = allGeneTags.ElementAt(tag).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
 			var firstSphere = Int32.Parse(tagSphereNums[0]);
 			var secondSphere = Int32.Parse(tagSphereNums[1]);
-			//Debug.Log (firstSphere + " first and second " + secondSphere);
-
-			//if (i >= firstSphere && i <= secondSphere) {
-				for (var num = firstSphere; num <= secondSphere; num++)
-				{
-					
-					if (linkSpheresGenes.ContainsKey(num)) {
-						linkSpheresGenes [num].Add (tag);
-						//Debug.Log (num + " " + tag);
-					} else {
-						var newList = new List<int> ();
-						newList.Add (tag);
-						linkSpheresGenes.Add (num, newList);
-						//Debug.Log (num + " in new list " + tag);
-					}
+			for (var num = firstSphere; num <= secondSphere; num++)
+			{
+				
+				if (linkSpheresGenes.ContainsKey(num)) {
+					linkSpheresGenes [num].Add (tag);
+					//Debug.Log ("Sphere number: " + num + " has tag at geneTags " + tag);
+				} else {
+					var newList = new List<int> ();
+					newList.Add (tag);
+					linkSpheresGenes.Add (num, newList);
+					//Debug.Log ("Sphere number: " + num + " has new list with tag at geneTags " + tag);
 				}
-			//}
+			}
 		}
-		//}
-		Debug.Log(linkSpheresGenes[1].Count);
     }
 
 	public void LoadGenesByClickSphere(int sphereNum){
-				var geneIndexes = linkSpheresGenes [sphereNum];
+		var geneIndexes = linkSpheresGenes [sphereNum];
 
 		foreach (var indexOfGene in geneIndexes) {
 			searchString = allGeneTags.ElementAt (indexOfGene);
@@ -136,8 +130,9 @@ public class LoadDat_Single : MonoBehaviour {
 		
 		geneObjects.ElementAt(sphereNum).SetActive(true);
 		genes.Add (sphereNum);
-        
+
 		string info = LoadGeneText (spheres [sphereNum].name);
+
 		if(!geneInfo.ContainsKey(sphereNum)){
 			geneInfo.Add(sphereNum, info);
 			PrintGeneInfo();
@@ -145,42 +140,51 @@ public class LoadDat_Single : MonoBehaviour {
 
 	}
 
-	private void PrintGeneInfo(){
-		
-		foreach (var panel in contentPanels) {
-			panel.GetComponentInChildren<Text> ().text = "";
-		}
-        
-		for(var i = 0; i < geneInfo.Count; i++){
-			if(i < contentPanels.Count) {
-				var info = geneInfo.ElementAt (i);
-				contentPanels[i].GetComponentInChildren<Text> ().text = info.Value;
 
-				string pattern = @"(\/locus_tag="".*?\"")";
-				MatchCollection matches = Regex.Matches (info.Value, pattern);
+    private void PrintGeneInfo()
+    {
 
-				var uniqueMatches = matches
-					.OfType<Match>()
-					.Select(m => m.Value)
-					.Distinct()
-					.ToList();
+        foreach (var panel in contentPanels)
+        {
+            panel.GetComponentInChildren<Text>().text = "";
+            panel.GetComponentInChildren<Text>().alignment = TextAnchor.UpperLeft;
+        }
 
-				string locusTags = "";
-				foreach (var locusTag in uniqueMatches) {
-					locusTags = locusTags + "\n" + locusTag.Split(new string[] { "\"" }, StringSplitOptions.RemoveEmptyEntries)[1];
-				}
+        for (var i = 0; i < geneInfo.Count; i++)
+        {
 
-				geneObjects [info.Key].transform.GetChild (0).gameObject.GetComponentInChildren<Text> ().text = locusTags;
+            var info = geneInfo.ElementAt(i);
 
-			} else {
-                //contentPanels[0].GetComponentInChildren<Text> ().text = geneInfo[i];
-                //i = 1;
-                break;
-			}
-		}
-	}
+            if (i < contentPanels.Count)
+            {
+                var infoText = Regex.Replace(info.Value, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
+                infoText = "Sphere number: " + info.Key + "\n\n" + infoText;
 
-	public void RemoveAllGenes(bool spheresOn) {
+                contentPanels[i].GetComponentInChildren<Text>().alignment = TextAnchor.UpperLeft;
+                contentPanels[i].GetComponentInChildren<Text>().text = infoText;
+            }
+
+            string pattern = @"(\/locus_tag="".*?\"")";
+            MatchCollection matches = Regex.Matches(info.Value, pattern);
+
+            var uniqueMatches = matches
+                .OfType<Match>()
+                .Select(m => m.Value)
+                .Distinct()
+                .ToList();
+
+            string locusTags = "";
+            foreach (var locusTag in uniqueMatches)
+            {
+                locusTags = locusTags + "\n" + locusTag.Split(new string[] { "\"" }, StringSplitOptions.RemoveEmptyEntries)[1];
+            }
+
+            locusTags = "Sphere number: " + info.Key + "\n" + locusTags;
+            geneObjects[info.Key].transform.GetChild(0).gameObject.GetComponentInChildren<Text>().text = locusTags;
+        }
+    }
+
+    public void RemoveAllGenes(bool spheresOn) {
 		
 		foreach (var gene in genes)
 		{
@@ -195,16 +199,30 @@ public class LoadDat_Single : MonoBehaviour {
 		}
 	}
 
-	public void RemoveOneGene(int geneNumber) {
-		
-		geneObjects.ElementAt(geneNumber).SetActive(false);
-		geneInfo.Remove (geneNumber);
-		PrintGeneInfo ();
+	public void RemoveGenesOnClickSphere(int sphereNum) {
 
-		if (geneObjects.Count > 0) {
-			toggleSpheresOn ();
-		}
+        var geneIndexes = linkSpheresGenes[sphereNum];
+
+        foreach (var indexOfGene in geneIndexes)
+        {
+            removeString = allGeneTags.ElementAt(indexOfGene);
+            RemoveGenesByString();
+        }
 	}
+
+    public void RemoveGenesByString() {
+        var words = removeString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+        var fromNum = Int32.Parse(words[0]);
+        var toNum = Int32.Parse(words[1]);
+
+        for (var i = fromNum; i <= toNum; i++)
+        {
+            geneInfo.Remove(i);
+            geneObjects.ElementAt(i).SetActive(false);
+        }
+        PrintGeneInfo();
+    }
 
 
 	////////////////////////////////////////////////////////
@@ -257,7 +275,6 @@ public class LoadDat_Single : MonoBehaviour {
 
 		foreach (var gene in genesComplete) {
 			allGeneTags.Add (gene.Key);
-			//Debug.Log (gene.Key);
 		}
 		changingDropdownGeneTags.AddRange (allGeneTags);
 	}
@@ -512,8 +529,14 @@ public class LoadDat_Single : MonoBehaviour {
 
 		LinkSpheresTagsNumbers ();
 
-		LoadGenesByClickSphere (1);
-	}
+		LoadGenesByClickSphere (0);
+		LoadGenesByClickSphere (2);
+		LoadGenesByClickSphere (7);
+		LoadGenesByClickSphere (0);
+
+        RemoveGenesOnClickSphere(1);
+
+    }
 
 	////////////////////////////////////////////////////////
 	/// INSTANTIATE DNA STRUCTURE INCLUDING SPHERES, GENES AND GENE INFO /////////
@@ -635,5 +658,11 @@ public class LoadDat_Single : MonoBehaviour {
 		contentPanels.Add(GameObject.Find ("Content1"));
 		contentPanels.Add(GameObject.Find ("Content2"));
 		contentPanels.Add(GameObject.Find ("Content3"));
-	}
+        contentPanels.Add(GameObject.Find("Content4"));
+        contentPanels.Add(GameObject.Find("Content5"));
+        contentPanels.Add(GameObject.Find("Content6"));
+        contentPanels.Add(GameObject.Find("Content7"));
+        contentPanels.Add(GameObject.Find("Content8"));
+        contentPanels.Add(GameObject.Find("Content9"));
+    }
 }
