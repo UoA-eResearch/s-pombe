@@ -381,7 +381,6 @@ public class LoadDat_Single : MonoBehaviour {
 				if (pos != null) {
 					if (name != "") {
 						genesComplete.Add (name, tempList);
-						//Debug.Log(genesComplete.Last());
 						name = "";
 					}
 					name = pos;
@@ -540,17 +539,6 @@ public class LoadDat_Single : MonoBehaviour {
 
         RemoveGenesOnClickSphere(1);
 
-        //StartCoroutine(testCoroutine());
-
-    }
-
-    IEnumerator testCoroutine()
-    {
-        for (var i = 0; i < 20; i++)
-        {
-            Debug.Log(i);
-            yield return new WaitForSeconds(4.0F);
-        }
     }
 
     ////////////////////////////////////////////////////////
@@ -601,7 +589,7 @@ public class LoadDat_Single : MonoBehaviour {
 		blue.SetColor("_Color", colorsSpheresOn[2]);
 
 		var peachRed = new MaterialPropertyBlock();
-		peachRed.SetColor("_Color", colorsWeights[0]);
+		peachRed.SetColor("_EmissionColor", colorsWeights[0]);
 		var peach = new MaterialPropertyBlock();
 		peach.SetColor("_Color", colorsWeights[1]);
 		var peachBrown = new MaterialPropertyBlock();
@@ -612,7 +600,7 @@ public class LoadDat_Single : MonoBehaviour {
 		yellowBrown.SetColor("_Color", colorsWeights[4]);
 
 		var magenta = new MaterialPropertyBlock();
-		magenta.SetColor("_Color", colorsWeights[5]);
+		magenta.SetColor("_EmissionColor", colorsWeights[5]);
 		var darkRed = new MaterialPropertyBlock();
 		darkRed.SetColor("_Color", colorsWeights[6]);
 
