@@ -215,13 +215,14 @@ public class LoadDat_Single : MonoBehaviour {
 
     public void RemoveGenesByString() {
         var words = removeString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
+        
         var fromNum = Int32.Parse(words[0]);
         var toNum = Int32.Parse(words[1]);
 
         for (var i = fromNum; i <= toNum; i++)
         {
             geneInfo.Remove(i);
+            Debug.Log(geneObjects.ElementAt(i));
             geneObjects.ElementAt(i).SetActive(false);
         }
         PrintGeneInfo();
@@ -535,7 +536,7 @@ public class LoadDat_Single : MonoBehaviour {
 		LoadGenesByClickSphere (0);
 		LoadGenesByClickSphere (2);
 		LoadGenesByClickSphere (7);
-		LoadGenesByClickSphere (0);
+		//LoadGenesByClickSphere (0);
 
         RemoveGenesOnClickSphere(1);
 
@@ -591,60 +592,60 @@ public class LoadDat_Single : MonoBehaviour {
 		var peachRed = new MaterialPropertyBlock();
 		peachRed.SetColor("_EmissionColor", colorsWeights[0]);
 		var peach = new MaterialPropertyBlock();
-		peach.SetColor("_Color", colorsWeights[1]);
+		peach.SetColor("_EmissionColor", colorsWeights[1]);
 		var peachBrown = new MaterialPropertyBlock();
-		peachBrown.SetColor("_Color", colorsWeights[2]);
+		peachBrown.SetColor("_EmissionColor", colorsWeights[2]);
 		var dullBrown = new MaterialPropertyBlock();
-		dullBrown.SetColor("_Color", colorsWeights[3]);
+		dullBrown.SetColor("_EmissionColor", colorsWeights[3]);
 		var yellowBrown = new MaterialPropertyBlock();
-		yellowBrown.SetColor("_Color", colorsWeights[4]);
+		yellowBrown.SetColor("_EmissionColor", colorsWeights[4]);
 
 		var magenta = new MaterialPropertyBlock();
 		magenta.SetColor("_EmissionColor", colorsWeights[5]);
 		var darkRed = new MaterialPropertyBlock();
-		darkRed.SetColor("_Color", colorsWeights[6]);
+		darkRed.SetColor("_EmissionColor", colorsWeights[6]);
 
 		var lightTurquoise = new MaterialPropertyBlock();
-		lightTurquoise.SetColor("_Color", colorsWeights[7]);
+		lightTurquoise.SetColor("_EmissionColor", colorsWeights[7]);
 		var turquoise = new MaterialPropertyBlock();
-		turquoise.SetColor("_Color", colorsWeights[8]);
+		turquoise.SetColor("_EmissionColor", colorsWeights[8]);
 
 		var lightPurple = new MaterialPropertyBlock();
-		lightPurple.SetColor("_Color", colorsWeights[9]);
+		lightPurple.SetColor("_EmissionColor", colorsWeights[9]);
 		var purple = new MaterialPropertyBlock();
-		purple.SetColor("_Color", colorsWeights[10]);
+		purple.SetColor("_EmissionColor", colorsWeights[10]);
 		var bluePurple = new MaterialPropertyBlock();
-		bluePurple.SetColor("_Color", colorsWeights[11]);
+		bluePurple.SetColor("_EmissionColor", colorsWeights[11]);
 		var redPurple = new MaterialPropertyBlock();
-		redPurple.SetColor("_Color", colorsWeights[12]);
+		redPurple.SetColor("_EmissionColor", colorsWeights[12]);
 
 		var brightGreen = new MaterialPropertyBlock();
-		brightGreen.SetColor("_Color", colorsWeights[13]);
+		brightGreen.SetColor("_EmissionColor", colorsWeights[13]);
 		var dullGreen = new MaterialPropertyBlock();
-		dullGreen.SetColor("_Color", colorsWeights[14]);
+		dullGreen.SetColor("_EmissionColor", colorsWeights[14]);
 
 
 		var brightBlue = new MaterialPropertyBlock();
-		brightBlue.SetColor("_Color", colorsWeights[15]);
+		brightBlue.SetColor("_EmissionColor", colorsWeights[15]);
 		var dullBlue = new MaterialPropertyBlock();
-		dullBlue.SetColor("_Color", colorsWeights[16]);
+		dullBlue.SetColor("_EmissionColor", colorsWeights[16]);
 		var darkBlue = new MaterialPropertyBlock();
-		darkBlue.SetColor("_Color", colorsWeights[17]);
+		darkBlue.SetColor("_EmissionColor", colorsWeights[17]);
 
 		var lightYellow = new MaterialPropertyBlock();
-		lightYellow.SetColor("_Color", colorsWeights[18]);
+		lightYellow.SetColor("_EmissionColor", colorsWeights[18]);
 		var orange = new MaterialPropertyBlock();
-		orange.SetColor("_Color", colorsWeights[19]);
+		orange.SetColor("_EmissionColor", colorsWeights[19]);
 
 
 		var lightGreen = new MaterialPropertyBlock();
-		lightGreen.SetColor("_Color", colorsWeights[20]);
+		lightGreen.SetColor("_EmissionColor", colorsWeights[20]);
 		var neonGreen = new MaterialPropertyBlock();
-		neonGreen.SetColor("_Color", colorsWeights[21]);
+		neonGreen.SetColor("_EmissionColor", colorsWeights[21]);
 		var grassGreen = new MaterialPropertyBlock();
-		grassGreen.SetColor("_Color", colorsWeights[22]);
+		grassGreen.SetColor("_EmissionColor", colorsWeights[22]);
 		var darkGreen = new MaterialPropertyBlock();
-		darkGreen.SetColor("_Color", colorsWeights[23]);
+		darkGreen.SetColor("_EmissionColor", colorsWeights[23]);
 
 		materials = new MaterialPropertyBlock[] { red, green, blue, peachRed, peach, peachBrown, dullBrown, yellowBrown, magenta, darkRed, lightTurquoise, turquoise, lightPurple, purple, bluePurple, redPurple, brightGreen,
 			dullGreen, brightBlue, dullBlue, darkBlue, lightYellow, orange, lightGreen, neonGreen, grassGreen, darkGreen };
