@@ -65,7 +65,7 @@ public class VRUIInput : MonoBehaviour
             var root = GameObject.Find("root");
             if (gene.activeInHierarchy)
             {
-                root.GetComponentInParent<LoadDat_Single>().RemoveGenesOnClickSphere(Int32.Parse(gene.name));
+                StartCoroutine(root.GetComponentInParent<LoadDat_Single>().RemoveGenesOnClickSphere(Int32.Parse(gene.name)));
             }
             else
             {

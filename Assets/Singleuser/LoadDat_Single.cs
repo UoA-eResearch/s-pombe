@@ -38,6 +38,7 @@ public class LoadDat_Single : MonoBehaviour {
 	private Dictionary<int, string> geneInfo = new Dictionary<int, string> ();
 	Dictionary<int, List<int>> linkSpheresGenes = new Dictionary<int, List<int>> ();
 	private int whichChromosome = 1;
+    private bool isCalculating = false;
 
 
 	////////////////////////////////////////////////////////
@@ -103,15 +104,19 @@ public class LoadDat_Single : MonoBehaviour {
     }
 
 	public void LoadGenesByClickSphere(int sphereNum){
-		var geneIndexes = linkSpheresGenes [sphereNum];
+        if (linkSpheresGenes.ContainsKey(sphereNum)) {
+            var geneIndexes = linkSpheresGenes[sphereNum];
 
-		foreach (var indexOfGene in geneIndexes) {
-			searchString = allGeneTags.ElementAt (indexOfGene);
-			StartCoroutine(LoadGenesByString());
-		}
+            foreach (var indexOfGene in geneIndexes)
+            {
+                searchString = allGeneTags.ElementAt(indexOfGene);
+                StartCoroutine(LoadGenesByString());
+            }
+        }
 	}
 
 	IEnumerator LoadGenesByString(){
+        isCalculating = true;
 		
 		var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -120,9 +125,10 @@ public class LoadDat_Single : MonoBehaviour {
 
 		for (var i = fromNum; i <= toNum; i++) {
 			activateGlow (i);
-            yield return new WaitForSeconds(2.0F);
+            yield return new WaitForSeconds(3.0F);
         }
 		toggleSpheresOff ();
+        isCalculating = false;
 	}
 
 	private void activateGlow(int sphereNum){
@@ -202,7 +208,9 @@ public class LoadDat_Single : MonoBehaviour {
 		}
 	}
 
-	public void RemoveGenesOnClickSphere(int sphereNum) {
+	public IEnumerator RemoveGenesOnClickSphere(int sphereNum) {
+        if(isCalculating)
+            yield return new WaitForSeconds(1.0F);
 
         var geneIndexes = linkSpheresGenes[sphereNum];
 
@@ -210,8 +218,11 @@ public class LoadDat_Single : MonoBehaviour {
         {
             removeString = allGeneTags.ElementAt(indexOfGene);
             RemoveGenesByString();
+            yield return new WaitForSeconds(2.0F);
         }
-	}
+        genes.RemoveAt(sphereNum);
+
+    }
 
     public void RemoveGenesByString() {
         var words = removeString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -533,12 +544,10 @@ public class LoadDat_Single : MonoBehaviour {
 
 		LinkSpheresTagsNumbers ();
 
-		LoadGenesByClickSphere (0);
-		LoadGenesByClickSphere (2);
-		LoadGenesByClickSphere (7);
-		//LoadGenesByClickSphere (0);
-
-        RemoveGenesOnClickSphere(1);
+		
+        LoadGenesByClickSphere(3002);
+        //LoadGenesByClickSphere (0);
+        
 
     }
 
