@@ -39,11 +39,14 @@ public class LoadDat_Single : MonoBehaviour {
 	Dictionary<int, List<int>> linkSpheresGenes = new Dictionary<int, List<int>> ();
 	private int whichChromosome = 1;
     private bool isCalculating = false;
+    private bool isLoadingGeneTags = false;
+    int numRout = 0;
+    Coroutine lastRoutine = null;
 
 
-	////////////////////////////////////////////////////////
-	/// GET ADDITIONAL GENE INFORMATION /////////
-	///////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
+    /// GET ADDITIONAL GENE INFORMATION /////////
+    ///////////////////////////////////////////////////////
     string LoadGeneText(string sphName) {
         var sphereNumber = Int32.Parse(sphName.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)[0]);
 
@@ -110,15 +113,15 @@ public class LoadDat_Single : MonoBehaviour {
             foreach (var indexOfGene in geneIndexes)
             {
                 searchString = allGeneTags.ElementAt(indexOfGene);
-                StartCoroutine(LoadGenesByString());
             }
         }
 	}
 
 	IEnumerator LoadGenesByString(){
         isCalculating = true;
-		
-		var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+        toggleSpheresOff();
+
+        var words = searchString.Split (new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
 		var fromNum = Int32.Parse (words [0]);
 		var toNum = Int32.Parse (words [1]);
@@ -127,7 +130,6 @@ public class LoadDat_Single : MonoBehaviour {
 			activateGlow (i);
             yield return new WaitForSeconds(3.0F);
         }
-		toggleSpheresOff ();
         isCalculating = false;
 	}
 
@@ -203,12 +205,24 @@ public class LoadDat_Single : MonoBehaviour {
 		geneInfo = new Dictionary<int, string> ();
 		PrintGeneInfo ();
 
-		if (spheresOn) {
+        if (spheresOn) {
 			toggleSpheresOn ();
 		}
 	}
 
-	public IEnumerator RemoveGenesOnClickSphere(int sphereNum) {
+
+    public void ResetGenes(bool spheresOn)
+    {
+        StopAllCoroutines();
+        
+        RemoveAllGenes(spheresOn);
+        GameObject.Find("SearchInput").GetComponentInChildren<InputField>().text = "";
+        GameObject.Find("GeneTags").GetComponentInChildren<Dropdown>().value = 0;
+    }
+
+
+
+    public IEnumerator RemoveGenesOnClickSphere(int sphereNum) {
         if(isCalculating)
             yield return new WaitForSeconds(1.0F);
 
@@ -233,7 +247,6 @@ public class LoadDat_Single : MonoBehaviour {
         for (var i = fromNum; i <= toNum; i++)
         {
             geneInfo.Remove(i);
-            Debug.Log(geneObjects.ElementAt(i));
             geneObjects.ElementAt(i).SetActive(false);
         }
         PrintGeneInfo();
@@ -295,39 +308,55 @@ public class LoadDat_Single : MonoBehaviour {
 	}
 
 
-	////////////////////////////////////////////////////////
-	/// TEXT INPUT /////////
-	///////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
+    /// TEXT INPUT /////////
+    ///////////////////////////////////////////////////////
 
-	//CALL WHEN USER CHANGES TEXT INPUT FOR SEARCH
-	public void SearchInputChanged(string inputText){
+    //CALL WHEN USER CHANGES TEXT INPUT FOR SEARCH
+    public void SearchInputChanged(string inputText) {
+        
+        if(lastRoutine != null)
+            StopCoroutine(lastRoutine);
 
-		changingDropdownGeneTags = new List<string> ();
-		changingDropdownGeneTags.Add ("No Tag Selected");
-		foreach (var tag in allGeneTags) {
-			if (tag.Contains (inputText)) {
-				changingDropdownGeneTags.Add (tag);
-			}
-		}
+        changingDropdownGeneTags = new List<string>();
 
-		StartCoroutine(LoadDropdownGeneTags ());
+        if (inputText == "")
+        {
+            changingDropdownGeneTags.AddRange(allGeneTags);
+        }
+        else
+        {
+            changingDropdownGeneTags.Add("No Tag Selected");
+            foreach (var tag in allGeneTags)
+            {
+                if (tag.Contains(inputText) && tag != "No Tag Selected")
+                {
+                    changingDropdownGeneTags.Add(tag);
+                }
+            }
+        }
+        
+        lastRoutine = StartCoroutine(LoadDropdownGeneTags());
+        
 	}
 
 
 	//DISPLAY ONLY CERTAIN AMOUNT OF TAGS IN DROPDOWN DEPENDING ON TEXTFIELD SEARCH INPUT
 	IEnumerator LoadDropdownGeneTags(){
-		var dropdown = GameObject.Find("GeneTags").GetComponent<Dropdown> ();
-		dropdown.options.Clear ();
+        
+        var dropdown = GameObject.Find("GeneTags").GetComponentInChildren<Dropdown> ();
+        dropdown.options.Clear();
 		var count = 0;
-		foreach (string tag in changingDropdownGeneTags) {
-			count++;
-			if (count > 100) {
+        
+        foreach (string tag in changingDropdownGeneTags) {
+            yield return null;
+            count++;
+			if (count > 50) {
 				break;
 			}
 			dropdown.options.Add (new Dropdown.OptionData (tag.ToString()));
-            yield return null;
         }
-	}
+    }
 
 
 	////////////////////////////////////////////////////////
@@ -518,18 +547,19 @@ public class LoadDat_Single : MonoBehaviour {
 		Debug.Log(structures.Length + " structures " + weights.Length + " weights");
 
 		// Setup menu
-		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 30;
+		var y = menu.GetComponent<RectTransform>().rect.height / 2 - 45;
 		var count = 0;
 
 		foreach (var w in weights)
 		{
 			var toggle = Instantiate(togglePrefab, menu.transform);
 			toggle.GetComponentInChildren<Text>().text = w.name;
-			toggle.GetComponentInChildren<Text>().color = colorsWeights[count];
+            toggle.GetComponent<Image>().color  = colorsWeights[count];
+			//toggle.GetComponentInChildren<Text>().color = colorsWeights[count];
 			toggle.name = w.name;
-			toggle.transform.localPosition = new Vector3(-270, y-80, 0);
+			toggle.transform.localPosition = new Vector3(-417, y-80, 0);
 			toggles.Add(toggle);
-			y -= 30;
+			y -= 45;
 			markers.Add(w.name, new List<GameObject>());
 			count += 1;
 		}
