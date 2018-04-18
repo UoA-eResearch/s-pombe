@@ -34,16 +34,16 @@ public class PlayerController : NetworkBehaviour
 				transform.position += v * 100;
 				transform.Rotate(controller.angularVelocity, Space.World);
 			}
-			//if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
-			//{
-			//	var s = controller.GetAxis().y;
-			//	float scale = 1.05f;
-			//	if (s < 0)
-			//	{
-			//		scale = .95f;
-			//	}
-			//	transform.localScale *= scale;
-			//}
+			if (controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+			{
+				var s = controller.GetAxis().y;
+				float scale = 1.05f;
+				if (s < 0)
+				{
+					scale = .95f;
+				}
+				transform.localScale *= scale;
+			}
 
 			if (controller.GetPress (SteamVR_Controller.ButtonMask.Touchpad)) {
 				Vector2 touchpad = (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_Axis0));

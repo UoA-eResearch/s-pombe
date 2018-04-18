@@ -184,7 +184,9 @@ public class LoadDat_Single : MonoBehaviour {
             }
 
             locusTags = "Sphere number: " + info.Key + "\n" + locusTags;
-            geneObjects[info.Key].transform.GetChild(0).gameObject.GetComponentInChildren<Text>().text = locusTags;
+            var infoGO = geneObjects[info.Key].transform.GetChild(0).gameObject;
+            infoGO.transform.rotation = Quaternion.Euler(0, -90, 0);
+            infoGO.GetComponentInChildren<Text>().text = locusTags;
 
             
         }
@@ -570,7 +572,6 @@ public class LoadDat_Single : MonoBehaviour {
 
 		LinkSpheresTagsNumbers ();
 
-        LoadGenesByClickSphere(139);
         LoadGenesByClickSphere(3002);
         
     }
@@ -609,7 +610,6 @@ public class LoadDat_Single : MonoBehaviour {
 			spheres.Add(sphere);
 		}
 		toggleSpheresOn ();
-		Debug.Log ("Count of spheres: " + spheres.Count);
 	}
 
 
