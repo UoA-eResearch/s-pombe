@@ -132,7 +132,11 @@ public class LoadDat_Single : MonoBehaviour {
 	private void activateGlow(int sphereNum){
 		
 		geneObjects.ElementAt(sphereNum).SetActive(true);
-		genes.Add (sphereNum);
+
+        if (!genes.Contains(sphereNum))
+        {
+            genes.Add(sphereNum);
+        }
 
         string info = LoadGeneText (sphereNum);
 
@@ -232,10 +236,10 @@ public class LoadDat_Single : MonoBehaviour {
         {
             removeString = allGeneTags.ElementAt(indexOfGene);
             RemoveGenesByString();
-            genes.RemoveAt(genes.IndexOf(sphereNum));
             yield return null;
         }
         
+
         if (genes.Count() == 0) {
             toggleSpheresOn();
         }
@@ -251,6 +255,9 @@ public class LoadDat_Single : MonoBehaviour {
         {
             geneInfo.Remove(i);
             geneObjects.ElementAt(i).SetActive(false);
+            if (genes.Contains(i)) {
+                genes.Remove(i);
+            }
         }
         PrintGeneInfo();
     }
@@ -578,8 +585,11 @@ public class LoadDat_Single : MonoBehaviour {
 
 		LinkSpheresTagsNumbers ();
 
-        LoadGenesByClickSphere(3002);
-        StartCoroutine(RemoveGenesOnClickSphere(3002));
+       // LoadGenesByClickSphere(0);
+        //LoadGenesByClickSphere(3);
+
+        //StartCoroutine(RemoveGenesOnClickSphere(0));
+        //sStartCoroutine(RemoveGenesOnClickSphere(4));
     }
 
     ////////////////////////////////////////////////////////
