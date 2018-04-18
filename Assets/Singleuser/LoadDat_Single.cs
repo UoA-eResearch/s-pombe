@@ -127,7 +127,7 @@ public class LoadDat_Single : MonoBehaviour {
             yield return null;
         }
         isCalculating = false;
-	}
+    }
 
 	private void activateGlow(int sphereNum){
 		
@@ -221,19 +221,24 @@ public class LoadDat_Single : MonoBehaviour {
 
 
     public IEnumerator RemoveGenesOnClickSphere(int sphereNum) {
-        if(isCalculating)
+        
+        while (isCalculating) {
             yield return new WaitForSeconds(1.0F);
+        }
 
         var geneIndexes = linkSpheresGenes[sphereNum];
-
+        
         foreach (var indexOfGene in geneIndexes)
         {
             removeString = allGeneTags.ElementAt(indexOfGene);
             RemoveGenesByString();
+            genes.RemoveAt(genes.IndexOf(sphereNum));
             yield return null;
         }
-        genes.RemoveAt(sphereNum);
-
+        
+        if (genes.Count() == 0) {
+            toggleSpheresOn();
+        }
     }
 
     public void RemoveGenesByString() {
@@ -269,6 +274,7 @@ public class LoadDat_Single : MonoBehaviour {
 
 		foreach (var gene in genes) {
 			geneObjects.ElementAt(gene).SetActive (true);
+            PrintGeneInfo();
 			toggleSpheresOff ();
 		}
 	}
@@ -573,7 +579,7 @@ public class LoadDat_Single : MonoBehaviour {
 		LinkSpheresTagsNumbers ();
 
         LoadGenesByClickSphere(3002);
-        
+        StartCoroutine(RemoveGenesOnClickSphere(3002));
     }
 
     ////////////////////////////////////////////////////////
