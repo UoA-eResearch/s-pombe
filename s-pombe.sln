@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "s-pombe", "s-pombe.csproj", "{9AAE99D5-9A93-93C3-9B3E-92D30863EB27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "s-pombe.Editor", "s-pombe.Editor.csproj", "{8AD8DA80-2A50-4579-3941-736C9C6F039A}"
